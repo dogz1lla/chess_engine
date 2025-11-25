@@ -49,7 +49,7 @@ struct Board* init_board() {
     return b;
 };
 
-uint64_t overlap_all(struct Board* b) {
+uint64_t combine_all_pieces(struct Board* b) {
     return (uint64_t)0
         | b->wking
         | b->bking
@@ -76,7 +76,7 @@ void print_bits(uint64_t n) {
 
 int main(void) {
     struct Board *board = init_board();
-    print_bits(overlap_all(board));
+    print_bits(combine_all_pieces(board));
     free(board);
     return 0;
 }
