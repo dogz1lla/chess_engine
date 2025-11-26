@@ -75,6 +75,11 @@ uint64_t combine_all_pieces(struct Board* b) {
     ;
 }
 
+uint64_t bit_complement(uint64_t b) {return ~b;}
+uint64_t bit_intersection(uint64_t a, uint64_t b) {return a & b;}
+uint64_t bit_union(uint64_t a, uint64_t b) {return a | b;}
+uint64_t bit_xor(uint64_t a, uint64_t b) {return a ^ b;}
+
 uint64_t shift_north(uint64_t b)    {return b << 8;}
 uint64_t shift_south(uint64_t b)    {return b >> 8;}
 uint64_t shiftEast(uint64_t b)      {return (b << 1) & notAFile;}
@@ -83,6 +88,8 @@ uint64_t shiftSoutheast(uint64_t b) {return (b >> 7) & notAFile;}
 uint64_t shiftWest(uint64_t b)      {return (b >> 1) & notHFile;}
 uint64_t shiftSouthwest(uint64_t b) {return (b >> 9) & notHFile;}
 uint64_t shiftNorthwest(uint64_t b) {return (b << 7) & notHFile;}
+uint64_t rotateLeft (uint64_t x, int s) {return (x << s) | (x >> (64-s));}
+uint64_t rotateRight(uint64_t x, int s) {return (x >> s) | (x << (64-s));}
 
 void print_bits(uint64_t n) {
     for (size_t i=0; i<64; i++) {
@@ -94,7 +101,7 @@ void print_bits(uint64_t n) {
 
 int main(void) {
     struct Board *board = init_board();
-    print_bits(combine_all_pieces(board));
+    print_bits(bit_complement(combine_all_pieces(board)));
     free(board);
     return 0;
 }
