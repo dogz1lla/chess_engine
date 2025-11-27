@@ -23,3 +23,5 @@ struct Board {
 
 struct Board* init_board();
 uint64_t overlap_all(struct Board* b);
+void print_bits(uint64_t n);
+uint64_t combine_all_pieces(struct Board* b);

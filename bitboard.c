@@ -80,10 +80,3 @@ void print_bits(uint64_t n) {
         printf("%s\n", bit_str);
     }
 }
-
-int main(void) {
-    struct Board *board = init_board();
-    print_bits(bit_complement(combine_all_pieces(board)));
-    free(board);
-    return 0;
-}
