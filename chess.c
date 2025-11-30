@@ -12,7 +12,7 @@ int main(void) {
     }
 
     init_board(b);
-    print_bits(w_double_push_targets(b->wpawn, b->empty));
+    print_bits(w_pawns_able_to_double_push(b->wpawn, b->empty));
     free(b);
     return 0;
 }

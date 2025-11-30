@@ -111,3 +111,37 @@ uint64_t b_double_push_targets(uint64_t bpawns, uint64_t empty) {
     uint64_t single_pushes = b_single_push_targets(bpawns, empty);
     return shift_south(single_pushes) & empty & rank5;
 }
+
+uint64_t w_pawns_able_to_push(uint64_t wpawns, uint64_t empty) {
+    return shift_south(empty) & wpawns;
+}
+
+uint64_t b_pawns_able_to_push(uint64_t bpawns, uint64_t empty) {
+    return shift_north(empty) & bpawns;
+}
+
+uint64_t w_pawns_able_to_double_push(uint64_t wpawns, uint64_t empty) {
+    const uint64_t rank4 = ((uint64_t)1 << (8 * 3 + 0))
+                         | ((uint64_t)1 << (8 * 3 + 1))
+                         | ((uint64_t)1 << (8 * 3 + 2))
+                         | ((uint64_t)1 << (8 * 3 + 3))
+                         | ((uint64_t)1 << (8 * 3 + 4))
+                         | ((uint64_t)1 << (8 * 3 + 5))
+                         | ((uint64_t)1 << (8 * 3 + 6))
+                         | ((uint64_t)1 << (8 * 3 + 7));
+    const uint64_t empty_rank3 = shift_south(rank4 & empty) & empty;
+    return w_pawns_able_to_push(wpawns, empty_rank3);
+}
+
+uint64_t b_pawns_able_to_double_push(uint64_t bpawns, uint64_t empty) {
+    const uint64_t rank5 = ((uint64_t)1 << (8 * 4 + 0))
+                         | ((uint64_t)1 << (8 * 4 + 1))
+                         | ((uint64_t)1 << (8 * 4 + 2))
+                         | ((uint64_t)1 << (8 * 4 + 3))
+                         | ((uint64_t)1 << (8 * 4 + 4))
+                         | ((uint64_t)1 << (8 * 4 + 5))
+                         | ((uint64_t)1 << (8 * 4 + 6))
+                         | ((uint64_t)1 << (8 * 4 + 7));
+    const uint64_t empty_rank6 = shift_north(rank5 & empty) & empty;
+    return b_pawns_able_to_push(bpawns, empty_rank6);
+}
