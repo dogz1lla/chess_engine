@@ -6,13 +6,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
-#include <locale.h>
 
-#include "bitboard.h"
-#include "one_step.h"
 #include "set_operations.h"
+#include "one_step.h"
+#include "bitboard.h"
 
+
+uint64_t combine_all_pieces(struct Board* b) {
+    return (uint64_t)0
+        | b->wking
+        | b->bking
+        | b->wqueen
+        | b->bqueen
+        | b->wrook
+        | b->brook
+        | b->wknight
+        | b->bknight
+        | b->wbishop
+        | b->bbishop
+        | b->wpawn
+        | b->bpawn
+    ;
+}
 
 struct Board* init_board() {
     struct Board *b = calloc(1, sizeof(struct Board));
@@ -53,24 +68,10 @@ struct Board* init_board() {
              | ((uint64_t)1 << (8 * 6 + 6))
              | ((uint64_t)1 << (8 * 6 + 7))
     ;
-    return b;
-}
 
-uint64_t combine_all_pieces(struct Board* b) {
-    return (uint64_t)0
-        | b->wking
-        | b->bking
-        | b->wqueen
-        | b->bqueen
-        | b->wrook
-        | b->brook
-        | b->wknight
-        | b->bknight
-        | b->wbishop
-        | b->bbishop
-        | b->wpawn
-        | b->bpawn
-    ;
+    b->occupied = combine_all_pieces(b);
+    b->empty    = bit_complement(b->occupied);
+    return b;
 }
 
 void print_bits(uint64_t n) {
@@ -79,4 +80,14 @@ void print_bits(uint64_t n) {
         char* bit_str = bit > 0 ? "1" : "0";
         printf("%s\n", bit_str);
     }
+}
+
+uint64_t get_square_bit(int idx) {return (uint64_t)1 << idx;}
+
+uint64_t w_single_push_targets(uint64_t wpawns, uint64_t empty) {
+    return shift_north(wpawns) & empty;
+}
+
+uint64_t b_single_push_targets(uint64_t bpawns, uint64_t empty) {
+    return shift_south(bpawns) & empty;
 }

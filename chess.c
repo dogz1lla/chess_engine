@@ -6,7 +6,8 @@
 
 int main(void) {
     struct Board *board = init_board();
-    print_bits(bit_complement(combine_all_pieces(board)));
+    // print_bits(board->occupied);
+    print_bits(board->empty);
     free(board);
     return 0;
 }
