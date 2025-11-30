@@ -29,12 +29,7 @@ uint64_t combine_all_pieces(struct Board* b) {
     ;
 }
 
-struct Board* init_board() {
-    struct Board *b = calloc(1, sizeof(struct Board));
-    if (b == NULL) {
-        return NULL;
-    }
-
+void init_board(struct Board* b) {
     b->wking = (uint64_t)1 << (8 * 0 + 4);
     b->bking = (uint64_t)1 << (8 * 7 + 4);
 
@@ -71,7 +66,6 @@ struct Board* init_board() {
 
     b->occupied = combine_all_pieces(b);
     b->empty    = bit_complement(b->occupied);
-    return b;
 }
 
 void print_bits(uint64_t n) {
@@ -90,4 +84,30 @@ uint64_t w_single_push_targets(uint64_t wpawns, uint64_t empty) {
 
 uint64_t b_single_push_targets(uint64_t bpawns, uint64_t empty) {
     return shift_south(bpawns) & empty;
+}
+
+uint64_t w_double_push_targets(uint64_t wpawns, uint64_t empty) {
+    const uint64_t rank4 = ((uint64_t)1 << (8 * 3 + 0))
+                         | ((uint64_t)1 << (8 * 3 + 1))
+                         | ((uint64_t)1 << (8 * 3 + 2))
+                         | ((uint64_t)1 << (8 * 3 + 3))
+                         | ((uint64_t)1 << (8 * 3 + 4))
+                         | ((uint64_t)1 << (8 * 3 + 5))
+                         | ((uint64_t)1 << (8 * 3 + 6))
+                         | ((uint64_t)1 << (8 * 3 + 7));
+    uint64_t single_pushes = w_single_push_targets(wpawns, empty);
+    return shift_north(single_pushes) & empty & rank4;
+}
+
+uint64_t b_double_push_targets(uint64_t bpawns, uint64_t empty) {
+    const uint64_t rank5 = ((uint64_t)1 << (8 * 4 + 0))
+                         | ((uint64_t)1 << (8 * 4 + 1))
+                         | ((uint64_t)1 << (8 * 4 + 2))
+                         | ((uint64_t)1 << (8 * 4 + 3))
+                         | ((uint64_t)1 << (8 * 4 + 4))
+                         | ((uint64_t)1 << (8 * 4 + 5))
+                         | ((uint64_t)1 << (8 * 4 + 6))
+                         | ((uint64_t)1 << (8 * 4 + 7));
+    uint64_t single_pushes = b_single_push_targets(bpawns, empty);
+    return shift_south(single_pushes) & empty & rank5;
 }

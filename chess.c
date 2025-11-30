@@ -1,13 +1,18 @@
 #include <stdlib.h>
+#include <stdio.h>
 
-#include "set_operations.h"
 #include "bitboard.h"
 
 
 int main(void) {
-    struct Board *board = init_board();
-    // print_bits(board->occupied);
-    print_bits(board->empty);
-    free(board);
+    struct Board *b = calloc(1, sizeof(struct Board));
+    if (b == NULL) {
+        printf("%s\n", "Board allocation failed.");
+        return 1;
+    }
+
+    init_board(b);
+    print_bits(w_double_push_targets(b->wpawn, b->empty));
+    free(b);
     return 0;
 }
