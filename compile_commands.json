@@ -1,0 +1,104 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "ws_example.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/ws_example.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "lib/wsServer/src/ws.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/lib/wsServer/src/ws.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "lib/wsServer/src/utf8.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/lib/wsServer/src/utf8.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "lib/wsServer/src/handshake.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/lib/wsServer/src/handshake.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "lib/wsServer/src/sha1.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/lib/wsServer/src/sha1.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Ilib/wsServer/src",
+      "-Ilib/wsServer/include",
+      "-o",
+      "ws_example",
+      "lib/wsServer/src/base64.c"
+    ],
+    "directory": "/home/gz/code/chess_engine",
+    "file": "/home/gz/code/chess_engine/lib/wsServer/src/base64.c",
+    "output": "/home/gz/code/chess_engine/ws_example"
+  }
+]
