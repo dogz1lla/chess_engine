@@ -86,11 +86,15 @@ void init_board(struct Board* b) {
     b->empty    = bit_complement(b->occupied);
 }
 
-void print_bits(uint64_t n) {
+void print_bits(uint64_t n, int as_column) {
     for (size_t i=0; i<64; i++) {
         uint64_t bit = n & ((uint64_t)1 << i);
         char* bit_str = bit > 0 ? "1" : "0";
-        printf("%s\n", bit_str);
+        char* suffix  = "\n";
+        if (as_column < 1) {
+            suffix  = (i+1) % 8 == 0 ? "\n" : " ";
+        }
+        printf("%s%s", bit_str, suffix);
     }
 }
 
