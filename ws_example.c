@@ -7,13 +7,6 @@
 #include "engine_context.h"
 #include "msg_protocol.h"
 
-// TODO: move to separate file
-int algebraic_to_index(char file, char rank) {
-    int f = file - 'a';     // a–h  -> 0–7
-    int r = rank - '1';     // 1–8  -> 0–7
-    return r * 8 + f;       // your board indexing
-}
-
 
 /**
  * @brief This function is called whenever a new connection is opened.
@@ -57,9 +50,10 @@ void onmessage(ws_cli_conn_t client,
     sleep(2);
     ws_sendframe_txt(client, "world");
     /* TODO
-     * - [ ] read the msg into a c str;
+     * - [ ] think about how to serialized state (FEN?);
+     * - [x] read the msg into a c str;
      * - [ ] parse the msg;
-     * - [ ] if move -> make move;
+     * - [x] if move -> make move;
      * - [ ] if attack -> make attack;
      * - [ ] eval and find the engine's next move;
      * - [ ] update the board and send back to client to render;
@@ -87,7 +81,7 @@ void onmessage(ws_cli_conn_t client,
     if (strcmp(cmd, "m") == 0) {
         char *color = strtok(NULL, " ");
         char *piece = strtok(NULL, " ");
-        char *move  = strtok(NULL, " "); // e2e4
+        char *move  = strtok(NULL, " ");
 
         printf("Got a request to move %s %s (%s)\n", color, piece, move);
         int from = algebraic_to_index(move[0], move[1]);
@@ -95,6 +89,11 @@ void onmessage(ws_cli_conn_t client,
 
         Move m = make_move_from_strings(color, piece, from, to);
         move_piece(ctx->board, &m);
+
+        // send the state of the board back to the client as FEN
+        char out_fen[128];
+        board_to_full_fen(ctx->board, out_fen);
+        ws_sendframe_txt(client, out_fen);
         // send_state(client, &ctx->board);
     } else {
         printf("Error: message of type %s is not supported\n", cmd);
