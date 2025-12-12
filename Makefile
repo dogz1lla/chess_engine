@@ -24,6 +24,7 @@ WS_EXAMPLE_SRCS = \
 	one_step.c \
     bitboard.c \
     engine_context.c \
+    msg_protocol.c \
     lib/wsServer/src/ws.c \
     lib/wsServer/src/utf8.c \
     lib/wsServer/src/handshake.c \

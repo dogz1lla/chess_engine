@@ -1,9 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <ws.h>
 #include "bitboard.h"
 #include "engine_context.h"
+#include "msg_protocol.h"
+
+// TODO: move to separate file
+int algebraic_to_index(char file, char rank) {
+    int f = file - 'a';     // a–h  -> 0–7
+    int r = rank - '1';     // 1–8  -> 0–7
+    return r * 8 + f;       // your board indexing
+}
+
 
 /**
  * @brief This function is called whenever a new connection is opened.
@@ -64,6 +74,31 @@ void onmessage(ws_cli_conn_t client,
      *   etc.
      * */
     EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
+    print_bits(ctx->board->occupied, 0);
+
+    char buffer[256];
+    strncpy(buffer, (const char*)msg, size);
+    buffer[size] = '\0';
+
+    char *cmd = strtok(buffer, " ");
+    if (!cmd) return;
+    else printf("The message is of type: %s\n", cmd);
+
+    if (strcmp(cmd, "m") == 0) {
+        char *color = strtok(NULL, " ");
+        char *piece = strtok(NULL, " ");
+        char *move  = strtok(NULL, " "); // e2e4
+
+        printf("Got a request to move %s %s (%s)\n", color, piece, move);
+        int from = algebraic_to_index(move[0], move[1]);
+        int to   = algebraic_to_index(move[2], move[3]);
+
+        Move m = make_move_from_strings(color, piece, from, to);
+        move_piece(ctx->board, &m);
+        // send_state(client, &ctx->board);
+    } else {
+        printf("Error: message of type %s is not supported\n", cmd);
+    }
     print_bits(ctx->board->occupied, 0);
 }
 
