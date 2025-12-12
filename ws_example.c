@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ws.h>
+#include "bitboard.h"
+#include "engine_context.h"
 
 /**
  * @brief This function is called whenever a new connection is opened.
@@ -44,6 +46,25 @@ void onmessage(ws_cli_conn_t client,
     ws_sendframe_txt(client, "hello");
     sleep(2);
     ws_sendframe_txt(client, "world");
+    /* TODO
+     * - [ ] read the msg into a c str;
+     * - [ ] parse the msg;
+     * - [ ] if move -> make move;
+     * - [ ] if attack -> make attack;
+     * - [ ] eval and find the engine's next move;
+     * - [ ] update the board and send back to client to render;
+     *
+     *   how can i encode the msgs? i could use json but i dont want to depend on another third
+     *   party library
+     *   how about encoding through strings that contain words separated by spaces?
+     *   Examples:
+     *   'move white pawn e2e4'
+     *   'take white pawn black pawn e2d3'
+     *   'promote black pawn queen e2e1'
+     *   etc.
+     * */
+    EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
+    print_bits(ctx->board->occupied, 0);
 }
 
 int main(void)
@@ -55,6 +76,15 @@ int main(void)
      * to handle new connections and ws_socket() becomes
      * non-blocking.
      */
+    EngineContext *ctx = calloc(1, sizeof(EngineContext));
+    Board *b = calloc(1, sizeof(Board));
+    if (b == NULL) {
+        printf("%s\n", "Board allocation failed.");
+        return 1;
+    }
+    ctx->board = b;
+    init_board(b);
+
     ws_socket(&(struct ws_server){
         /*
          * Bind host, such as:
@@ -68,7 +98,8 @@ int main(void)
         .timeout_ms    = 1000,
         .evs.onopen    = &onopen,
         .evs.onclose   = &onclose,
-        .evs.onmessage = &onmessage
+        .evs.onmessage = &onmessage,
+        .context = ctx
     });
 
     return (0);

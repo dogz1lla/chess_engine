@@ -20,6 +20,10 @@ CHESS_OBJS = $(CHESS_SRCS:.c=.o)
 # These include the example code and all the library source files
 WS_EXAMPLE_SRCS = \
     ws_example.c \
+	set_operations.c \
+	one_step.c \
+    bitboard.c \
+    engine_context.c \
     lib/wsServer/src/ws.c \
     lib/wsServer/src/utf8.c \
     lib/wsServer/src/handshake.c \
