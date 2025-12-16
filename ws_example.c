@@ -17,6 +17,9 @@ void onopen(ws_cli_conn_t client)
     char *cli;
     cli = ws_getaddress(client);
     printf("Connection opened, addr: %s\n", cli);
+
+    EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
+    init_board(ctx->board);
 }
 
 /**
@@ -45,10 +48,10 @@ void onmessage(ws_cli_conn_t client,
     printf("I receive a message: %s (%zu), from: %s\n", msg,
         size, cli);
 
-    sleep(2);
-    ws_sendframe_txt(client, "hello");
-    sleep(2);
-    ws_sendframe_txt(client, "world");
+    // sleep(2);
+    // ws_sendframe_txt(client, "hello");
+    // sleep(2);
+    // ws_sendframe_txt(client, "world");
     /* TODO
      * - [ ] think about how to serialized state (FEN?);
      * - [x] read the msg into a c str;
@@ -68,7 +71,7 @@ void onmessage(ws_cli_conn_t client,
      *   etc.
      * */
     EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
-    print_bits(ctx->board->occupied, 0);
+    // print_bits(ctx->board->occupied, 0);
 
     char buffer[256];
     strncpy(buffer, (const char*)msg, size);

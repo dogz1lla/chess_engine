@@ -67,7 +67,6 @@ int get_piece_on_square(Board *b, int sq, int *out_color, int *out_piece) {
 
 // NOTE: LLM
 void board_to_fen(Board *b, char *out_fen) {
-    printf("%d\n", (int)b->empty);
     char buf[128] = {0};
     int buf_i = 0;
 
