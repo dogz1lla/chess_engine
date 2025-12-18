@@ -92,14 +92,27 @@ void onmessage(ws_cli_conn_t client,
 
         Move m = make_move_from_strings(color, piece, from, to);
         move_piece(ctx->board, &m);
+        sprintf(ctx->last_move, "%s %s %s", color, piece, move);  // record the last move
 
+        /* TODO (NEXT)
+         * - [ ] reconsider the msg protocol
+         * - [ ] idea: server response is of the form "fen last_move"
+         * - [ ] another idea: add a possibility for the client to request the last move
+         * */
         // send the state of the board back to the client as FEN
         char out_fen[128];
+        char out_fen_msg[130];
         board_to_full_fen(ctx->board, out_fen);
-        ws_sendframe_txt(client, out_fen);
+        // ws_sendframe_txt(client, out_fen);
+        sprintf(out_fen_msg, "s:%s", out_fen);
+        ws_sendframe_txt(client, out_fen_msg);
         // send_state(client, &ctx->board);
+    } else if (strcmp(cmd, "lm") == 0) {
+        char lm_msg[19];
+        sprintf(lm_msg, "lm:%s", ctx->last_move);
+        ws_sendframe_txt(client, lm_msg);
     } else {
-        printf("Error: message of type %s is not supported\n", cmd);
+        printf("Unknown message type: %s\n", cmd);
     }
     print_bits(ctx->board->occupied, 0);
 }
