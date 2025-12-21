@@ -17,9 +17,6 @@ void onopen(ws_cli_conn_t client)
     char *cli;
     cli = ws_getaddress(client);
     printf("Connection opened, addr: %s\n", cli);
-
-    EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
-    init_board(ctx->board);
 }
 
 /**
@@ -127,13 +124,10 @@ int main(void)
      * non-blocking.
      */
     EngineContext *ctx = calloc(1, sizeof(EngineContext));
-    Board *b = calloc(1, sizeof(Board));
-    if (b == NULL) {
-        printf("%s\n", "Board allocation failed.");
+    if (init_engine_context(ctx) > 0) {
+        printf("Engine context init failed\n");
         return 1;
     }
-    ctx->board = b;
-    init_board(b);
 
     ws_socket(&(struct ws_server){
         /*
