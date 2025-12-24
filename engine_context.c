@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "bitboard.h"
 #include "engine_context.h"
 
 
@@ -17,3 +16,28 @@ int init_engine_context(EngineContext* ctx) {
     ctx->turn = 'w';
     return 0;
 }
+
+void switch_turn(EngineContext* ctx) {
+    ctx->turn = ctx->turn == 'w' ? 'b' : 'w';
+}
+
+
+// NOTE: TEMP HACK (until castling and en-passante are implemented)
+// NOTE: LLM
+void board_to_full_fen(EngineContext *ctx, char *out_fen) {
+    char placement[128];
+    board_to_fen(ctx->board, placement);
+
+    char turn[2];
+    strcpy(turn, &ctx->turn);
+
+    // Default:
+    // side-to-move = w
+    // castling     = KQkq
+    // en-passant   = -
+    // halfmove     = 0
+    // fullmove     = 1
+
+    sprintf(out_fen, "%s %s KQkq - 0 1", placement, turn);
+}
+

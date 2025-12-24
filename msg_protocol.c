@@ -65,7 +65,10 @@ int get_piece_on_square(Board *b, int sq, int *out_color, int *out_piece) {
     return 0;
 }
 
-// NOTE: LLM
+/* Take the bitboard and convert it to the first chunk of the FEN string
+ * (the one that has the board configuration).
+ * NOTE: LLM
+ * */
 void board_to_fen(Board *b, char *out_fen) {
     char buf[128] = {0};
     int buf_i = 0;
@@ -103,20 +106,3 @@ void board_to_fen(Board *b, char *out_fen) {
     buf[buf_i] = '\0';
     strcpy(out_fen, buf);
 }
-
-// NOTE: TEMP HACK (until castling and en-passante are implemented)
-// NOTE: LLM
-void board_to_full_fen(Board *b, char *out_fen) {
-    char placement[128];
-    board_to_fen(b, placement);
-
-    // Default:
-    // side-to-move = w
-    // castling     = KQkq
-    // en-passant   = -
-    // halfmove     = 0
-    // fullmove     = 1
-
-    sprintf(out_fen, "%s w KQkq - 0 1", placement);
-}
-
