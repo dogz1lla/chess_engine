@@ -143,6 +143,16 @@ uint64_t b_pawns_able_to_double_push(uint64_t bpawns, uint64_t empty) {
     return b_pawns_able_to_push(bpawns, empty_rank6);
 }
 
+uint64_t w_pawn_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | PAWN];
+    return w_single_push_targets(piece_bb, b->empty) | w_double_push_targets(piece_bb, b->empty);
+}
+
+uint64_t b_pawn_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | PAWN];
+    return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
+}
+
 /* see
  * https://www.chessprogramming.org/General_Setwise_Operations#Update_by_Move
  * */
