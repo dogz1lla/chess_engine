@@ -48,16 +48,29 @@ uint64_t combine_all_pieces(Board* b) {
 }
 
 void init_board(Board* b) {
-    b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
-    b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
-    b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
-    b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
-    b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
-    b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
-    b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
-    b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
-    b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
-    b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
+    // NOTE: for testing the moves/captures, every piece is disabled besides pawns
+    b->piece_bb[WHITE | KING]   = (uint64_t)0;
+    b->piece_bb[BLACK | KING]   = (uint64_t)0;
+    b->piece_bb[WHITE | QUEEN]  = (uint64_t)0;
+    b->piece_bb[BLACK | QUEEN]  = (uint64_t)0;
+    b->piece_bb[WHITE | ROOK]   = (uint64_t)0;
+    b->piece_bb[BLACK | ROOK]   = (uint64_t)0;
+    b->piece_bb[WHITE | KNIGHT] = (uint64_t)0;
+    b->piece_bb[BLACK | KNIGHT] = (uint64_t)0;
+    b->piece_bb[WHITE | BISHOP] = (uint64_t)0;
+    b->piece_bb[BLACK | BISHOP] = (uint64_t)0;
+
+
+    // b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
+    // b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
+    // b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
+    // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
+    // b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
+    // b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
+    // b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
+    // b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
+    // b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
+    // b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
     b->piece_bb[WHITE | PAWN]   = ((uint64_t)1 << (8 * 1 + 0))
                                 | ((uint64_t)1 << (8 * 1 + 1))
                                 | ((uint64_t)1 << (8 * 1 + 2))
@@ -68,8 +81,10 @@ void init_board(Board* b) {
                                 | ((uint64_t)1 << (8 * 1 + 7));
     b->piece_bb[BLACK | PAWN]   = ((uint64_t)1 << (8 * 6 + 0))
                                 | ((uint64_t)1 << (8 * 6 + 1))
-                                | ((uint64_t)1 << (8 * 6 + 2))
-                                | ((uint64_t)1 << (8 * 6 + 3))
+                                // | ((uint64_t)1 << (8 * 6 + 2))
+                                // | ((uint64_t)1 << (8 * 6 + 3))
+                                | ((uint64_t)1 << (8 * 3 + 3))
+                                | ((uint64_t)1 << (8 * 2 + 2))
                                 | ((uint64_t)1 << (8 * 6 + 4))
                                 | ((uint64_t)1 << (8 * 6 + 5))
                                 | ((uint64_t)1 << (8 * 6 + 6))
