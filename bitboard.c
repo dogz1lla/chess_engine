@@ -153,6 +153,21 @@ uint64_t b_pawn_moves_bb(Board *b, int idx) {
     return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
 }
 
+// TODO NEXT: implement this
+void calculate_all_moves_bb(Board *b, uint64_t* moves_array) {
+    int colors[] = { WHITE, BLACK };
+    int pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+
+    for (int color_idx = 0; color_idx <= 1; color_idx++) {
+        int color = colors[color_idx];
+        for (int piece_idx = 0; piece_idx <= 5; piece_idx++) {
+        }
+    }
+
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | PAWN];
+    return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
+}
+
 /* see
  * https://www.chessprogramming.org/General_Setwise_Operations#Update_by_Move
  * */

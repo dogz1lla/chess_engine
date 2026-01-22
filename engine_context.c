@@ -14,6 +14,10 @@ int init_engine_context(EngineContext* ctx) {
     init_board(b);
     memset(ctx->last_move, 0, sizeof(ctx->last_move));
     ctx->turn = 'w';
+
+    for (size_t i = 0; i < 64; i++) {
+        ctx->move_matrix[i] = (uint64_t)0;
+    }
     return 0;
 }
 
@@ -41,3 +45,5 @@ void board_to_full_fen(EngineContext *ctx, char *out_fen) {
     sprintf(out_fen, "%s %s KQkq - 0 1", placement, turn);
 }
 
+void calculate_all_moves(EngineContext *ctx) {
+}
