@@ -12,3 +12,8 @@ pacman -S bear
 ```
 bear -- make
 ```
+
+# References
+## Piece moves
+- [move encoding](https://www.chessprogramming.org/Encoding_Moves)
+- [sliding piece target squares bitboards](https://www.chessprogramming.org/Classical_Approach)
