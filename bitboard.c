@@ -153,20 +153,46 @@ uint64_t b_pawn_moves_bb(Board *b, int idx) {
     return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
 }
 
-// TODO NEXT: implement this
-void calculate_all_moves_bb(Board *b, uint64_t* moves_array) {
-    int colors[] = { WHITE, BLACK };
-    int pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+/*
+ * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
+ * If there is no piece there (shouldn't happen) then return empty bitboard.
+ * FIXME: implement for the following piece types:
+ * - [x] pawns
+ * - [ ] kings
+ * - [ ] queens
+ * - [ ] knights
+ * - [ ] bishops
+ * - [ ] rooks
+ *   */
+uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
+    uint16_t colors[] = { WHITE, BLACK };
+    uint16_t pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+    uint64_t square_idx_bb =  get_square_bit(square_idx);
 
-    for (int color_idx = 0; color_idx <= 1; color_idx++) {
-        int color = colors[color_idx];
-        for (int piece_idx = 0; piece_idx <= 5; piece_idx++) {
+    for (uint16_t color_idx = 0; color_idx <= 1; color_idx++) {
+        uint16_t color = colors[color_idx];
+        for (uint16_t piece_idx = 0; piece_idx <= 5; piece_idx++) {
+            uint16_t piece = pieces[piece_idx];
+            uint64_t piece_bb = b->piece_bb[color | piece];
+            if ((piece_bb & square_idx_bb) > 0) {
+                // the piece is on the given square -> dispatch on the kind of piece
+                if ((color | piece) == (WHITE | PAWN)) {
+                    return w_pawn_moves_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | PAWN)) {
+                    return b_pawn_moves_bb(b, square_idx);
+                }
+                else {
+                    // FIXME: implement the rest of the moves for other piece types
+                    return (uint64_t)0;
+                }
+            }
         }
     }
-
-    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | PAWN];
-    return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
+    // should ideally never reach here
+    return (uint64_t)0;
 }
+
 
 /* see
  * https://www.chessprogramming.org/General_Setwise_Operations#Update_by_Move

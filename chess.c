@@ -15,13 +15,19 @@ int main(void) {
     init_board(b);
     // print_bits(b->occupied, 0);
     // print_bits(w_pawns_able_to_double_push(b->piece_bb[WHITE | PAWN], b->empty), 0);
-    print_bits(w_pawn_moves_bb(b, 11), 0);
     // Move m = { .from = 12, .to = 28, .color = WHITE, .piece = PAWN };
     // move_piece(b, &m);
     // print_bits(b->occupied, 0);
     // char out_fen[128];
     // board_to_full_fen(b, out_fen);
     // printf("%s\n", out_fen);
+    //
+    // print_bits(w_pawn_moves_bb(b, 11), 0);
+    print_bits(get_possible_moves(b, 11), 0);
+    printf("\n");
+    print_bits(get_possible_moves(b, 10), 0);
+    printf("\n");
+    print_bits(get_possible_moves(b, 12), 0);
     free(b);
     return 0;
 }

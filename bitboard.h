@@ -50,3 +50,4 @@ uint64_t b_pawns_able_to_double_push(uint64_t, uint64_t);
 uint64_t w_pawn_moves_bb(Board *b, int idx);
 uint64_t b_pawn_moves_bb(Board *b, int idx);
 void move_piece(Board*, Move*);
+uint64_t get_possible_moves(Board *b, uint8_t square_idx);
