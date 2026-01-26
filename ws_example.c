@@ -42,8 +42,7 @@ void onmessage(ws_cli_conn_t client,
 {
     char *cli;
     cli = ws_getaddress(client);
-    printf("I receive a message: %s (%zu), from: %s\n", msg,
-        size, cli);
+    printf("I receive a message: %s (%zu), from: %s\n", msg, size, cli);
 
     // sleep(2);
     // ws_sendframe_txt(client, "hello");
@@ -78,7 +77,7 @@ void onmessage(ws_cli_conn_t client,
     if (!cmd) return;
     else printf("The message is of type: %s\n", cmd);
 
-    if (strcmp(cmd, "m") == 0) {
+    if (strcmp(cmd, "m") == 0) {  // make a move
         char *color = strtok(NULL, " ");
         char *piece = strtok(NULL, " ");
         char *move  = strtok(NULL, " ");
@@ -100,16 +99,38 @@ void onmessage(ws_cli_conn_t client,
         sprintf(out_fen_msg, "s:%s", out_fen);
         ws_sendframe_txt(client, out_fen_msg);
         // send_state(client, &ctx->board);
-    } else if (strcmp(cmd, "lm") == 0) {
+    } else if (strcmp(cmd, "lm") == 0) {  // return last move made
         char lm_msg[19];
         sprintf(lm_msg, "lm:%s", ctx->last_move);
         ws_sendframe_txt(client, lm_msg);
-    } else if (strcmp(cmd, "t") == 0) {
+    } else if (strcmp(cmd, "t") == 0) {  // get side whose turn it is
         char turn[2];
         strcpy(turn, &ctx->turn);
         char turn_msg[4];
         sprintf(turn_msg, "t:%s", turn);
         ws_sendframe_txt(client, turn_msg);
+    } else if (strcmp(cmd, "gm") == 0) {  // get moves for a square
+        char *square_idx_str = strtok(NULL, " ");
+        // FIXME: assumes the proper 0-63 input string, do a proper clean parsing fn
+        uint8_t square_idx = (uint8_t)strtol(square_idx_str, NULL, 10);
+        uint64_t moves_bb = get_possible_moves(ctx->board, square_idx);
+        uint8_t bb_array[64];
+        bb_to_array(moves_bb, bb_array);
+        char bb_array_str[64+1];
+        bb_array_to_str(bb_array, bb_array_str);
+        char gm_msg[3+64+1];
+        sprintf(gm_msg, "gm:%s", bb_array_str);
+        ws_sendframe_txt(client, gm_msg);
+    } else if (strcmp(cmd, "init") == 0) {  // reset state and send it back
+        // send the state of the board back to the client as FEN
+        reset_engine_context(ctx);
+        char out_fen[128];
+        char out_fen_msg[133];
+        board_to_full_fen(ctx, out_fen);
+        printf("State reset to %s\n", out_fen);
+        // ws_sendframe_txt(client, out_fen);
+        sprintf(out_fen_msg, "init:%s", out_fen);
+        ws_sendframe_txt(client, out_fen_msg);
     } else {
         printf("Unknown message type: %s\n", cmd);
     }

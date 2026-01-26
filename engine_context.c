@@ -4,14 +4,8 @@
 #include "engine_context.h"
 
 
-int init_engine_context(EngineContext* ctx) {
-    Board *b = calloc(1, sizeof(Board));
-    if (b == NULL) {
-        printf("%s\n", "Board allocation failed (during engine context allocation).");
-        return 1;
-    }
-    ctx->board = b;
-    init_board(b);
+int reset_engine_context(EngineContext* ctx) {
+    init_board(ctx->board);
     memset(ctx->last_move, 0, sizeof(ctx->last_move));
     ctx->turn = 'w';
 
@@ -19,6 +13,16 @@ int init_engine_context(EngineContext* ctx) {
         ctx->move_matrix[i] = (uint64_t)0;
     }
     return 0;
+}
+
+int init_engine_context(EngineContext* ctx) {
+    Board *b = calloc(1, sizeof(Board));
+    if (b == NULL) {
+        printf("%s\n", "Board allocation failed (during engine context allocation).");
+        return 1;
+    }
+    ctx->board = b;
+    return reset_engine_context(ctx);
 }
 
 void switch_turn(EngineContext* ctx) {

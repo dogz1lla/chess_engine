@@ -105,6 +105,38 @@ void print_bits(uint64_t n, int as_column) {
     }
 }
 
+void bb_to_array(uint64_t bb, uint8_t *bb_array) {
+    for (size_t i=0; i<64; i++) {
+        bb_array[i] = (bb & ((uint64_t)1 << i)) > 0;
+    }
+}
+
+// void (uint8_t *bb_array, char* bb_array_str) {
+//     for (size_t i=0; i<64; i++) {
+//     }
+// }
+void bb_array_to_str(const uint8_t *bb_array, char *bb_array_str) {
+    for (size_t i = 0; i < 64; i++) {
+        bb_array_str[i] = bb_array[i] > 0 ? '1' : '0';
+    }
+    bb_array_str[64] = '\0';
+}
+
+// // NOTE: LLM
+// void bb_array_to_str(const int *bb_array, size_t n, char *bb_array_str, size_t buflen) {
+//     size_t pos = 0;
+//
+//     for (size_t i = 0; i < n; i++) {
+//         int written = snprintf(bb_array_str + pos, buflen - pos,
+//             "%d%s", bb_array[i] > 0, (i + 1 < n) ? " " : "");
+//
+//         if (written < 0 || (size_t)written >= buflen - pos)
+//             break;
+//
+//         pos += (size_t)written;
+//     }
+// }
+
 uint64_t get_square_bit(int idx) {return (uint64_t)1 << idx;}
 
 uint64_t w_single_push_targets(uint64_t wpawns, uint64_t empty) {
