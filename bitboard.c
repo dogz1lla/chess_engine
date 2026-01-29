@@ -30,21 +30,30 @@ const uint64_t rank5 = ((uint64_t)1 << (8 * 4 + 0))
                      | ((uint64_t)1 << (8 * 4 + 7));
 
 
-uint64_t combine_all_pieces(Board* b) {
+uint64_t combine_all_white_pieces(Board* b) {
     return (uint64_t)0
         | b->piece_bb[WHITE | KING]
-        | b->piece_bb[BLACK | KING]
         | b->piece_bb[WHITE | QUEEN]
-        | b->piece_bb[BLACK | QUEEN]
         | b->piece_bb[WHITE | ROOK]
-        | b->piece_bb[BLACK | ROOK]
         | b->piece_bb[WHITE | KNIGHT]
-        | b->piece_bb[BLACK | KNIGHT]
         | b->piece_bb[WHITE | BISHOP]
-        | b->piece_bb[BLACK | BISHOP]
         | b->piece_bb[WHITE | PAWN]
+    ;
+}
+
+uint64_t combine_all_black_pieces(Board* b) {
+    return (uint64_t)0
+        | b->piece_bb[BLACK | KING]
+        | b->piece_bb[BLACK | QUEEN]
+        | b->piece_bb[BLACK | ROOK]
+        | b->piece_bb[BLACK | KNIGHT]
+        | b->piece_bb[BLACK | BISHOP]
         | b->piece_bb[BLACK | PAWN]
     ;
+}
+
+uint64_t combine_all_pieces(Board* b) {
+    return combine_all_white_pieces(b) | combine_all_black_pieces(b);
 }
 
 void init_board(Board* b) {
@@ -89,7 +98,10 @@ void init_board(Board* b) {
                                 | ((uint64_t)1 << (8 * 6 + 5))
                                 | ((uint64_t)1 << (8 * 6 + 6))
                                 | ((uint64_t)1 << (8 * 6 + 7));
-    b->occupied = combine_all_pieces(b);
+    b->white_pieces = combine_all_white_pieces(b);
+    b->black_pieces = combine_all_black_pieces(b);
+    // b->occupied = combine_all_pieces(b);
+    b->occupied = b->white_pieces | b->black_pieces;
     b->empty    = bit_complement(b->occupied);
 }
 
@@ -111,31 +123,12 @@ void bb_to_array(uint64_t bb, uint8_t *bb_array) {
     }
 }
 
-// void (uint8_t *bb_array, char* bb_array_str) {
-//     for (size_t i=0; i<64; i++) {
-//     }
-// }
 void bb_array_to_str(const uint8_t *bb_array, char *bb_array_str) {
     for (size_t i = 0; i < 64; i++) {
         bb_array_str[i] = bb_array[i] > 0 ? '1' : '0';
     }
     bb_array_str[64] = '\0';
 }
-
-// // NOTE: LLM
-// void bb_array_to_str(const int *bb_array, size_t n, char *bb_array_str, size_t buflen) {
-//     size_t pos = 0;
-//
-//     for (size_t i = 0; i < n; i++) {
-//         int written = snprintf(bb_array_str + pos, buflen - pos,
-//             "%d%s", bb_array[i] > 0, (i + 1 < n) ? " " : "");
-//
-//         if (written < 0 || (size_t)written >= buflen - pos)
-//             break;
-//
-//         pos += (size_t)written;
-//     }
-// }
 
 uint64_t get_square_bit(int idx) {return (uint64_t)1 << idx;}
 
