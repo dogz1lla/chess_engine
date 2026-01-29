@@ -276,29 +276,35 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
 
 /* see
  * https://www.chessprogramming.org/General_Setwise_Operations#Update_by_Move
+ * NOTE: i shuffled the logic slightly, keep an eye on this
  * */
 void move_piece(Board* b, Move* m) {
     if (m->color == COLOR_NONE || m->piece == PIECE_NONE) {
         // shouldnt happen, there should always be a piece that we are moving
         return;
     }
-    uint64_t from_bb = (uint64_t)1 << m->from;
-    uint64_t to_bb   = (uint64_t)1 << m->to;
+    uint64_t from_bb      = (uint64_t)1 << m->from;
+    uint64_t to_bb        = (uint64_t)1 << m->to;
     uint64_t from_to_bb   = from_bb ^ to_bb;
 
     b->piece_bb[m->color | m->piece] ^= from_to_bb;
-    b->occupied ^= from_to_bb;
-    b->empty ^= from_to_bb;
-
     if (m->color == WHITE) {
         b->white_pieces ^= from_to_bb;
     } else {
         b->black_pieces ^= from_to_bb;
     }
 
-    if (m->captured_color > 0 && m->captured_piece > 0) {
+    if (m->captured_color != COLOR_NONE && m->captured_piece != PIECE_NONE) {
         // capture
         b->piece_bb[m->captured_color | m->captured_piece] ^= to_bb;
+        if (m->captured_color == WHITE) {
+            b->white_pieces ^= to_bb;
+        } else {
+            b->black_pieces ^= to_bb;
+        }
     }
+
+    b->occupied = b->white_pieces | b->black_pieces;
+    b->empty    = bit_complement(b->occupied);
     return;
 }
