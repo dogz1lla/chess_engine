@@ -67,7 +67,6 @@ void onmessage(ws_cli_conn_t client,
      *   etc.
      * */
     EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
-    // print_bits(ctx->board->occupied, 0);
 
     char buffer[256];
     strncpy(buffer, (const char*)msg, size);
@@ -114,12 +113,18 @@ void onmessage(ws_cli_conn_t client,
         // FIXME: assumes the proper 0-63 input string, do a proper clean parsing fn
         uint8_t square_idx = (uint8_t)strtol(square_idx_str, NULL, 10);
         uint64_t moves_bb = get_possible_moves(ctx->board, square_idx);
-        uint8_t bb_array[64];
-        bb_to_array(moves_bb, bb_array);
-        char bb_array_str[64+1];
-        bb_array_to_str(bb_array, bb_array_str);
-        char gm_msg[3+64+1];
-        sprintf(gm_msg, "gm:%s", bb_array_str);
+        uint64_t attacks_bb = get_possible_attacks(ctx->board, square_idx);
+
+        uint8_t bb_array_moves[64], bb_array_attacks[64];
+        char bb_array_moves_str[64+1], bb_array_attacks_str[64+1];
+        // record moves
+        bb_to_array(moves_bb, bb_array_moves);
+        bb_to_array(attacks_bb, bb_array_attacks);
+        bb_array_to_str(bb_array_moves, bb_array_moves_str);
+        bb_array_to_str(bb_array_attacks, bb_array_attacks_str);
+
+        char gm_msg[(3+64+1) + 1 + (3+64+1)];
+        sprintf(gm_msg, "gm:%s_ga:%s", bb_array_moves_str, bb_array_attacks_str);
         ws_sendframe_txt(client, gm_msg);
     } else if (strcmp(cmd, "init") == 0) {  // reset state and send it back
         // send the state of the board back to the client as FEN
