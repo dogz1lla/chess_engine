@@ -81,12 +81,19 @@ void onmessage(ws_cli_conn_t client,
         char *color = strtok(NULL, " ");
         char *piece = strtok(NULL, " ");
         char *move  = strtok(NULL, " ");
+        char *captured_piece = strtok(NULL, " ");
+
+        // FIXME add similar validations for color and piece too
+        if (!move || strlen(move) != 4) {
+            printf("Invalid move format\n");
+            return;
+        }
 
         printf("Got a request to move %s %s (%s)\n", color, piece, move);
         int from = algebraic_to_index(move[0], move[1]);
         int to   = algebraic_to_index(move[2], move[3]);
 
-        Move m = make_move_from_strings(color, piece, from, to);
+        Move m = make_move_from_strings(color, piece, captured_piece, from, to);
         move_piece(ctx->board, &m);
         sprintf(ctx->last_move, "%s %s %s", color, piece, move);  // record the last move
         switch_turn(ctx);
