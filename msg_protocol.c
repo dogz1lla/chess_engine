@@ -10,7 +10,7 @@ int algebraic_to_index(char file, char rank) {
 }
 
 // NOTE: LLM
-Move make_move_from_strings(char * color, char* piece, int from, int to) {
+Move make_move_from_strings(char* color, char* piece, char* captured_piece, int from, int to) {
     int c = COLOR_NONE;
     if      (strcmp(color, "w") == 0) c = WHITE;
     else if (strcmp(color, "b") == 0) c = BLACK;
@@ -25,7 +25,21 @@ Move make_move_from_strings(char * color, char* piece, int from, int to) {
     else if (strcmp(piece, "q") == 0) p = QUEEN;
     else printf("Invalid piece type %s\n", piece);
 
-    Move m = { .from = from, .to = to, .color = c, .piece = p };
+    int c_c = COLOR_NONE;
+    int c_p = PIECE_NONE;
+    if (captured_piece) {
+        if      (strcmp(captured_piece, "k") == 0) c_p = KING;
+        else if (strcmp(captured_piece, "p") == 0) c_p = PAWN;
+        else if (strcmp(captured_piece, "n") == 0) c_p = KNIGHT;
+        else if (strcmp(captured_piece, "b") == 0) c_p = BISHOP;
+        else if (strcmp(captured_piece, "r") == 0) c_p = ROOK;
+        else if (strcmp(captured_piece, "q") == 0) c_p = QUEEN;
+        else printf("Invalid piece type (captured) %s\n", captured_piece);
+
+        c_c = c == WHITE ? BLACK : WHITE;
+    }
+
+    Move m = { .from = from, .to = to, .color = c, .piece = p, .captured_color = c_c, .captured_piece = c_p };
     return m;
 }
 
