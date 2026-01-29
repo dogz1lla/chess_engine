@@ -44,28 +44,6 @@ void onmessage(ws_cli_conn_t client,
     cli = ws_getaddress(client);
     printf("I receive a message: %s (%zu), from: %s\n", msg, size, cli);
 
-    // sleep(2);
-    // ws_sendframe_txt(client, "hello");
-    // sleep(2);
-    // ws_sendframe_txt(client, "world");
-    /* TODO
-     * - [ ] think about how to serialized state (FEN?);
-     * - [x] read the msg into a c str;
-     * - [ ] parse the msg;
-     * - [x] if move -> make move;
-     * - [ ] if attack -> make attack;
-     * - [ ] eval and find the engine's next move;
-     * - [ ] update the board and send back to client to render;
-     *
-     *   how can i encode the msgs? i could use json but i dont want to depend on another third
-     *   party library
-     *   how about encoding through strings that contain words separated by spaces?
-     *   Examples:
-     *   'move white pawn e2e4'
-     *   'take white pawn black pawn e2d3'
-     *   'promote black pawn queen e2e1'
-     *   etc.
-     * */
     EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
 
     char buffer[256];
