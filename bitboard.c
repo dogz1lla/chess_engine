@@ -132,6 +132,8 @@ void bb_array_to_str(const uint8_t *bb_array, char *bb_array_str) {
 
 uint64_t get_square_bit(int idx) {return (uint64_t)1 << idx;}
 
+/* PAWN MOVES
+ * */
 uint64_t w_single_push_targets(uint64_t wpawns, uint64_t empty) {
     return shift_north(wpawns) & empty;
 }
@@ -178,6 +180,30 @@ uint64_t b_pawn_moves_bb(Board *b, int idx) {
     return b_single_push_targets(piece_bb, b->empty) | b_double_push_targets(piece_bb, b->empty);
 }
 
+/* PAWN ATTACKS
+ * */
+uint64_t w_pawn_east_attacks(uint64_t wpawns) {return shift_north_east(wpawns);}
+uint64_t w_pawn_west_attacks(uint64_t wpawns) {return shift_north_west(wpawns);}
+uint64_t b_pawn_east_attacks(uint64_t bpawns) {return shift_south_east(bpawns);}
+uint64_t b_pawn_west_attacks(uint64_t bpawns) {return shift_south_west(bpawns);}
+
+uint64_t w_pawn_any_attacks(uint64_t    wpawns) {return w_pawn_east_attacks(wpawns) | w_pawn_west_attacks(wpawns);}
+uint64_t w_pawn_dbl_attacks(uint64_t    wpawns) {return w_pawn_east_attacks(wpawns) & w_pawn_west_attacks(wpawns);}
+uint64_t w_pawn_single_attacks(uint64_t wpawns) {return w_pawn_east_attacks(wpawns) ^ w_pawn_west_attacks(wpawns);}
+uint64_t b_pawn_any_attacks(uint64_t    bpawns) {return b_pawn_east_attacks(bpawns) | b_pawn_west_attacks(bpawns);}
+uint64_t b_pawn_dbl_attacks(uint64_t    bpawns) {return b_pawn_east_attacks(bpawns) & b_pawn_west_attacks(bpawns);}
+uint64_t b_pawn_single_attacks(uint64_t bpawns) {return b_pawn_east_attacks(bpawns) ^ b_pawn_west_attacks(bpawns);}
+
+uint64_t w_pawn_attacks_bb(Board *b, int idx) {
+    uint64_t single_piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | PAWN];
+    return w_pawn_any_attacks(single_piece_bb) & b->black_pieces;
+}
+
+uint64_t b_pawn_attacks_bb(Board *b, int idx) {
+    uint64_t single_piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | PAWN];
+    return b_pawn_any_attacks(single_piece_bb) & b->white_pieces;
+}
+
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
  * If there is no piece there (shouldn't happen) then return empty bitboard.
@@ -218,6 +244,35 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
     return (uint64_t)0;
 }
 
+uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
+    uint16_t colors[] = { WHITE, BLACK };
+    uint16_t pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+    uint64_t square_idx_bb =  get_square_bit(square_idx);
+
+    for (uint16_t color_idx = 0; color_idx <= 1; color_idx++) {
+        uint16_t color = colors[color_idx];
+        for (uint16_t piece_idx = 0; piece_idx <= 5; piece_idx++) {
+            uint16_t piece = pieces[piece_idx];
+            uint64_t piece_bb = b->piece_bb[color | piece];
+            if ((piece_bb & square_idx_bb) > 0) {
+                // the piece is on the given square -> dispatch on the kind of piece
+                if ((color | piece) == (WHITE | PAWN)) {
+                    return w_pawn_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | PAWN)) {
+                    return b_pawn_attacks_bb(b, square_idx);
+                }
+                else {
+                    // FIXME: implement the rest of the moves for other piece types
+                    return (uint64_t)0;
+                }
+            }
+        }
+    }
+    // should ideally never reach here
+    return (uint64_t)0;
+}
+
 
 /* see
  * https://www.chessprogramming.org/General_Setwise_Operations#Update_by_Move
@@ -234,6 +289,12 @@ void move_piece(Board* b, Move* m) {
     b->piece_bb[m->color | m->piece] ^= from_to_bb;
     b->occupied ^= from_to_bb;
     b->empty ^= from_to_bb;
+
+    if (m->color == WHITE) {
+        b->white_pieces ^= from_to_bb;
+    } else {
+        b->black_pieces ^= from_to_bb;
+    }
 
     if (m->captured_color > 0 && m->captured_piece > 0) {
         // capture
