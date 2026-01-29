@@ -69,8 +69,9 @@ void onmessage(ws_cli_conn_t client,
     EngineContext *ctx = (EngineContext *)ws_get_server_context(client);
 
     char buffer[256];
-    strncpy(buffer, (const char*)msg, size);
-    buffer[size] = '\0';
+    size_t n = size < sizeof(buffer) - 1 ? size : sizeof(buffer) - 1;
+    memcpy(buffer, msg, n);
+    buffer[n] = '\0';
 
     char *cmd = strtok(buffer, " ");
     if (!cmd) return;
