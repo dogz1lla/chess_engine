@@ -31,11 +31,15 @@ typedef struct {
     uint64_t piece_bb[23];
     uint64_t occupied;
     uint64_t empty;
+    uint64_t white_pieces;
+    uint64_t black_pieces;
 } Board;
 
 
 void init_board(Board*);
 void print_bits(uint64_t, int as_column);
+uint64_t combine_all_white_pieces(Board* b);
+uint64_t combine_all_black_pieces(Board* b);
 uint64_t combine_all_pieces(Board*);
 
 uint64_t get_square_bit(int idx);
