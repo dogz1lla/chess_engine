@@ -206,7 +206,7 @@ uint64_t b_pawn_attacks_bb(Board *b, int idx) {
 
 /* KING MOVES
  * */
-uint64_t king_move_targets(uint64_t kings, uint64_t empty) {
+uint64_t king_move_targets(uint64_t kings) {
     return shift_north(kings)
          | shift_south(kings)
          | shift_east(kings)
@@ -214,18 +214,29 @@ uint64_t king_move_targets(uint64_t kings, uint64_t empty) {
          | shift_north_west(kings)
          | shift_south_west(kings)
          | shift_north_east(kings)
-         | shift_south_east(kings)
-         & empty;
+         | shift_south_east(kings);
 }
 
 uint64_t w_king_moves_bb(Board *b, int idx) {
     uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | KING];
-    return king_move_targets(piece_bb, b->empty);
+    return king_move_targets(piece_bb) & b->empty;
 }
 
 uint64_t b_king_moves_bb(Board *b, int idx) {
     uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | KING];
-    return king_move_targets(piece_bb, b->empty);
+    return king_move_targets(piece_bb) & b->empty;
+}
+
+/* KING ATTACKS
+ * */
+uint64_t w_king_attacks_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | KING];
+    return king_move_targets(piece_bb) & b->black_pieces;
+}
+
+uint64_t b_king_attacks_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | KING];
+    return king_move_targets(piece_bb) & b->white_pieces;
 }
 
 
@@ -292,6 +303,12 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | PAWN)) {
                     return b_pawn_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | KING)) {
+                    return w_king_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | KING)) {
+                    return b_king_attacks_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types

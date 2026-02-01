@@ -55,7 +55,7 @@ uint64_t b_pawns_able_to_double_push(uint64_t, uint64_t);
 uint64_t w_pawn_moves_bb(Board *b, int idx);
 uint64_t b_pawn_moves_bb(Board *b, int idx);
 
-uint64_t king_move_targets(uint64_t kings, uint64_t empty);
+uint64_t king_move_targets(uint64_t kings);
 uint64_t w_king_moves_bb(Board *b, int idx);
 uint64_t b_king_moves_bb(Board *b, int idx);
 
@@ -78,5 +78,8 @@ uint64_t b_pawn_dbl_attacks(uint64_t    bpawns);
 uint64_t b_pawn_single_attacks(uint64_t bpawns);
 uint64_t w_pawn_attacks_bb(Board *b, int idx);
 uint64_t b_pawn_attacks_bb(Board *b, int idx);
+
+uint64_t w_king_attacks_bb(Board *b, int idx);
+uint64_t b_king_attacks_bb(Board *b, int idx);
 
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx);
