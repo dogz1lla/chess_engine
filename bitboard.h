@@ -43,6 +43,7 @@ uint64_t combine_all_black_pieces(Board* b);
 uint64_t combine_all_pieces(Board*);
 
 uint64_t get_square_bit(int idx);
+
 uint64_t w_single_push_targets(uint64_t, uint64_t);
 uint64_t b_single_push_targets(uint64_t, uint64_t);
 uint64_t w_double_push_targets(uint64_t, uint64_t);
@@ -53,8 +54,14 @@ uint64_t w_pawns_able_to_double_push(uint64_t, uint64_t);
 uint64_t b_pawns_able_to_double_push(uint64_t, uint64_t);
 uint64_t w_pawn_moves_bb(Board *b, int idx);
 uint64_t b_pawn_moves_bb(Board *b, int idx);
+
+uint64_t king_move_targets(uint64_t kings, uint64_t empty);
+uint64_t w_king_moves_bb(Board *b, int idx);
+uint64_t b_king_moves_bb(Board *b, int idx);
+
 void move_piece(Board*, Move*);
 uint64_t get_possible_moves(Board *b, uint8_t square_idx);
+
 void bb_to_array(uint64_t bb, uint8_t *idxs);
 void bb_array_to_str(const uint8_t *bb_array, char *bb_array_str);
 

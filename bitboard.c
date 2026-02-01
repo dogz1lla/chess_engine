@@ -70,8 +70,8 @@ void init_board(Board* b) {
     b->piece_bb[BLACK | BISHOP] = (uint64_t)0;
 
 
-    // b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
-    // b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
+    b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
+    b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
     // b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
     // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
     // b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
@@ -204,12 +204,37 @@ uint64_t b_pawn_attacks_bb(Board *b, int idx) {
     return b_pawn_any_attacks(single_piece_bb) & b->white_pieces;
 }
 
+/* KING MOVES
+ * */
+uint64_t king_move_targets(uint64_t kings, uint64_t empty) {
+    return shift_north(kings)
+         | shift_south(kings)
+         | shift_east(kings)
+         | shift_west(kings)
+         | shift_north_west(kings)
+         | shift_south_west(kings)
+         | shift_north_east(kings)
+         | shift_south_east(kings)
+         & empty;
+}
+
+uint64_t w_king_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | KING];
+    return king_move_targets(piece_bb, b->empty);
+}
+
+uint64_t b_king_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | KING];
+    return king_move_targets(piece_bb, b->empty);
+}
+
+
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
  * If there is no piece there (shouldn't happen) then return empty bitboard.
  * FIXME: implement for the following piece types:
  * - [x] pawns
- * - [ ] kings
+ * - [x] kings
  * - [ ] queens
  * - [ ] knights
  * - [ ] bishops
@@ -232,6 +257,12 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | PAWN)) {
                     return b_pawn_moves_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | KING)) {
+                    return w_king_moves_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | KING)) {
+                    return b_king_moves_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types
