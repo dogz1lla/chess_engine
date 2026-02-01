@@ -76,8 +76,8 @@ void init_board(Board* b) {
     // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
     // b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
     // b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
-    // b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
-    // b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
+    b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
+    b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
     // b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
     // b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
     b->piece_bb[WHITE | PAWN]   = ((uint64_t)1 << (8 * 1 + 0))
@@ -239,6 +239,42 @@ uint64_t b_king_attacks_bb(Board *b, int idx) {
     return king_move_targets(piece_bb) & b->white_pieces;
 }
 
+/* KNIGHT MOVES
+ * */
+uint64_t knight_move_targets(uint64_t knights) {
+    // see https://www.chessprogramming.org/Knight_Pattern
+    return shift_north(shift_north_west(knights))
+         | shift_north(shift_north_east(knights))
+         | shift_north_east(shift_east(knights))
+         | shift_south_east(shift_east(knights))
+         | shift_south(shift_south_east(knights))
+         | shift_south(shift_south_west(knights))
+         | shift_south_west(shift_west(knights))
+         | shift_north_west(shift_west(knights));
+}
+
+uint64_t w_knight_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | KNIGHT];
+    return knight_move_targets(piece_bb) & b->empty;
+}
+
+uint64_t b_knight_moves_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | KNIGHT];
+    return knight_move_targets(piece_bb) & b->empty;
+}
+
+/* KNIGHT ATTACKS
+ * */
+uint64_t w_knight_attacks_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[WHITE | KNIGHT];
+    return knight_move_targets(piece_bb) & b->black_pieces;
+}
+
+uint64_t b_knight_attacks_bb(Board *b, int idx) {
+    uint64_t piece_bb = get_square_bit(idx) & b->piece_bb[BLACK | KNIGHT];
+    return knight_move_targets(piece_bb) & b->white_pieces;
+}
+
 
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
@@ -247,7 +283,7 @@ uint64_t b_king_attacks_bb(Board *b, int idx) {
  * - [x] pawns
  * - [x] kings
  * - [ ] queens
- * - [ ] knights
+ * - [x] knights
  * - [ ] bishops
  * - [ ] rooks
  *   */
@@ -274,6 +310,12 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | KING)) {
                     return b_king_moves_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | KNIGHT)) {
+                    return w_knight_moves_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | KNIGHT)) {
+                    return b_knight_moves_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types
@@ -309,6 +351,12 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | KING)) {
                     return b_king_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | KNIGHT)) {
+                    return w_knight_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | KNIGHT)) {
+                    return b_knight_attacks_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types

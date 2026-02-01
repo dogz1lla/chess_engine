@@ -59,6 +59,10 @@ uint64_t king_move_targets(uint64_t kings);
 uint64_t w_king_moves_bb(Board *b, int idx);
 uint64_t b_king_moves_bb(Board *b, int idx);
 
+uint64_t knight_move_targets(uint64_t knights);
+uint64_t w_knight_moves_bb(Board *b, int idx);
+uint64_t b_knight_moves_bb(Board *b, int idx);
+
 void move_piece(Board*, Move*);
 uint64_t get_possible_moves(Board *b, uint8_t square_idx);
 
@@ -81,5 +85,8 @@ uint64_t b_pawn_attacks_bb(Board *b, int idx);
 
 uint64_t w_king_attacks_bb(Board *b, int idx);
 uint64_t b_king_attacks_bb(Board *b, int idx);
+
+uint64_t w_knight_attacks_bb(Board *b, int idx);
+uint64_t b_knight_attacks_bb(Board *b, int idx);
 
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx);

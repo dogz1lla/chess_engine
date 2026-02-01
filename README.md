@@ -18,3 +18,4 @@ bear -- make
 - [move encoding](https://www.chessprogramming.org/Encoding_Moves)
 - [sliding piece target squares bitboards](https://www.chessprogramming.org/Classical_Approach)
 - [pawn attacks](https://www.chessprogramming.org/Pawn_Attacks_(Bitboards))
+- [knight attacks/moves](https://www.chessprogramming.org/Knight_Pattern)
