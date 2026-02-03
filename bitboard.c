@@ -365,13 +365,6 @@ uint64_t b_queen_attacks_bb(Board *b, int idx) {return all_queen_attacks_bb(b, i
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
  * If there is no piece there (shouldn't happen) then return empty bitboard.
- * FIXME: implement for the following piece types:
- * - [x] pawns
- * - [x] kings
- * - [x] queens
- * - [x] knights
- * - [x] bishops
- * - [x] rooks
  *   */
 uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
     uint16_t colors[] = { WHITE, BLACK };
