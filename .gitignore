@@ -3,4 +3,5 @@ lib/
 chess
 bitboard
 ws_example
+test
 llm.md

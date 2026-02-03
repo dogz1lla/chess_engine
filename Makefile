@@ -13,7 +13,7 @@ TARGETS = chess ws_example
 # --- Source Files ---
 
 # Source files for the main 'chess' executable
-CHESS_SRCS = chess.c bitboard.c set_operations.c one_step.c msg_protocol.c moves.c
+CHESS_SRCS = chess.c bitboard.c set_operations.c one_step.c msg_protocol.c moves.c sliding.c
 CHESS_OBJS = $(CHESS_SRCS:.c=.o)
 
 # Source files for the 'ws_example' executable
