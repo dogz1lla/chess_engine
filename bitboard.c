@@ -371,40 +371,40 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
             if ((piece_bb & square_idx_bb) > 0) {
                 // the piece is on the given square -> dispatch on the kind of piece
                 int color_piece = color | piece;
-                if (color_piece == (WHITE | PAWN)) {
-                    return w_pawn_moves_bb(b, square_idx);
+                uint64_t moves_bb = 0;
+                switch (color_piece) {
+                    case (WHITE | PAWN):
+                        moves_bb = w_pawn_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | PAWN):
+                        moves_bb = b_pawn_moves_bb(b, square_idx);
+                        break;
+                    case (WHITE | KING):
+                        moves_bb = w_king_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | KING):
+                        moves_bb = b_king_moves_bb(b, square_idx);
+                        break;
+                    case (WHITE | KNIGHT):
+                        moves_bb = w_knight_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | KNIGHT):
+                        moves_bb = b_knight_moves_bb(b, square_idx);
+                        break;
+                    case (WHITE | ROOK):
+                        moves_bb = w_rook_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | ROOK):
+                        moves_bb = b_rook_moves_bb(b, square_idx);
+                        break;
+                    case (WHITE | BISHOP):
+                        moves_bb = w_bishop_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | BISHOP):
+                        moves_bb = b_bishop_moves_bb(b, square_idx);
+                        break;
                 }
-                else if (color_piece == (BLACK | PAWN)) {
-                    return b_pawn_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (WHITE | KING)) {
-                    return w_king_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (BLACK | KING)) {
-                    return b_king_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (WHITE | KNIGHT)) {
-                    return w_knight_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (BLACK | KNIGHT)) {
-                    return b_knight_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (WHITE | ROOK)) {
-                    return w_rook_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (BLACK | ROOK)) {
-                    return b_rook_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (WHITE | BISHOP)) {
-                    return w_bishop_moves_bb(b, square_idx);
-                }
-                else if (color_piece == (BLACK | BISHOP)) {
-                    return b_bishop_moves_bb(b, square_idx);
-                }
-                else {
-                    // FIXME: implement the rest of the moves for other piece types
-                    return (uint64_t)0;
-                }
+                return moves_bb;
             }
         }
     }
@@ -424,40 +424,41 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
             uint64_t piece_bb = b->piece_bb[color | piece];
             if ((piece_bb & square_idx_bb) > 0) {
                 // the piece is on the given square -> dispatch on the kind of piece
-                if ((color | piece) == (WHITE | PAWN)) {
-                    return w_pawn_attacks_bb(b, square_idx);
+                int color_piece = color | piece;
+                uint64_t attacks_bb = 0;
+                switch (color_piece) {
+                    case (WHITE | PAWN):
+                        attacks_bb = w_pawn_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | PAWN):
+                        attacks_bb = b_pawn_attacks_bb(b, square_idx);
+                        break;
+                    case (WHITE | KING):
+                        attacks_bb = w_king_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | KING):
+                        attacks_bb = b_king_attacks_bb(b, square_idx);
+                        break;
+                    case (WHITE | KNIGHT):
+                        attacks_bb = w_knight_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | KNIGHT):
+                        attacks_bb = b_knight_attacks_bb(b, square_idx);
+                        break;
+                    case (WHITE | ROOK):
+                        attacks_bb = w_rook_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | ROOK):
+                        attacks_bb = b_rook_attacks_bb(b, square_idx);
+                        break;
+                    case (WHITE | BISHOP):
+                        attacks_bb = w_bishop_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | BISHOP):
+                        attacks_bb = b_bishop_attacks_bb(b, square_idx);
+                        break;
                 }
-                else if ((color | piece) == (BLACK | PAWN)) {
-                    return b_pawn_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (WHITE | KING)) {
-                    return w_king_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (BLACK | KING)) {
-                    return b_king_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (WHITE | KNIGHT)) {
-                    return w_knight_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (BLACK | KNIGHT)) {
-                    return b_knight_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (WHITE | ROOK)) {
-                    return w_rook_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (BLACK | ROOK)) {
-                    return b_rook_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (WHITE | BISHOP)) {
-                    return w_bishop_attacks_bb(b, square_idx);
-                }
-                else if ((color | piece) == (BLACK | BISHOP)) {
-                    return b_bishop_attacks_bb(b, square_idx);
-                }
-                else {
-                    // FIXME: implement the rest of the moves for other piece types
-                    return (uint64_t)0;
-                }
+                return attacks_bb;
             }
         }
     }
