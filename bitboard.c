@@ -79,8 +79,8 @@ void init_board(Board* b) {
     b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
     // b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
     // b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
-    // b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
-    // b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
+    b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
+    b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
     // b->piece_bb[WHITE | PAWN]   = ((uint64_t)1 << (8 * 1 + 0))
     //                             | ((uint64_t)1 << (8 * 1 + 1))
     //                             | ((uint64_t)1 << (8 * 1 + 2))
@@ -327,6 +327,26 @@ uint64_t b_rook_moves_bb(Board *b, int idx) {return rook_moves_bb(b, idx);}
 uint64_t w_rook_attacks_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx) & b->black_pieces;}
 uint64_t b_rook_attacks_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx) & b->white_pieces;}
 
+/* BISHOP MOVES
+ * */
+uint64_t all_bishop_attacks_bb(Board *b, int idx) {
+    return get_ray_attacks(&b->ray_table, b->occupied, NE, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, NW, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, SE, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, SW, idx);
+}
+
+uint64_t bishop_moves_bb(Board *b, int idx) {return all_bishop_attacks_bb(b, idx) & b->empty;}
+uint64_t w_bishop_moves_bb(Board *b, int idx) {return bishop_moves_bb(b, idx);}
+uint64_t b_bishop_moves_bb(Board *b, int idx) {return bishop_moves_bb(b, idx);}
+
+/* BISHOP ATTACKS
+ * FIXME: change "attacks" to "captures" everywhere to avoid confusion
+ * */
+uint64_t w_bishop_attacks_bb(Board *b, int idx) {return all_bishop_attacks_bb(b, idx) & b->black_pieces;}
+uint64_t b_bishop_attacks_bb(Board *b, int idx) {return all_bishop_attacks_bb(b, idx) & b->white_pieces;}
+
+
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
  * If there is no piece there (shouldn't happen) then return empty bitboard.
@@ -335,8 +355,8 @@ uint64_t b_rook_attacks_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx
  * - [x] kings
  * - [ ] queens
  * - [x] knights
- * - [ ] bishops
- * - [ ] rooks
+ * - [x] bishops
+ * - [x] rooks
  *   */
 uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
     uint16_t colors[] = { WHITE, BLACK };
@@ -374,6 +394,12 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
                 }
                 else if (color_piece == (BLACK | ROOK)) {
                     return b_rook_moves_bb(b, square_idx);
+                }
+                else if (color_piece == (WHITE | BISHOP)) {
+                    return w_bishop_moves_bb(b, square_idx);
+                }
+                else if (color_piece == (BLACK | BISHOP)) {
+                    return b_bishop_moves_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types
@@ -421,6 +447,12 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | ROOK)) {
                     return b_rook_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | BISHOP)) {
+                    return w_bishop_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | BISHOP)) {
+                    return b_bishop_attacks_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types

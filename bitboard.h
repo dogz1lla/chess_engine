@@ -196,3 +196,12 @@ uint64_t w_rook_moves_bb(Board *b, int idx);
 uint64_t b_rook_moves_bb(Board *b, int idx);
 uint64_t w_rook_attacks_bb(Board *b, int idx);
 uint64_t b_rook_attacks_bb(Board *b, int idx);
+
+uint64_t w_rook_attacks_bb(Board *b, int idx);
+uint64_t b_rook_attacks_bb(Board *b, int idx);
+uint64_t all_bishop_attacks_bb(Board *b, int idx);
+uint64_t bishop_moves_bb(Board *b, int idx);
+uint64_t w_bishop_moves_bb(Board *b, int idx);
+uint64_t b_bishop_moves_bb(Board *b, int idx);
+uint64_t w_bishop_attacks_bb(Board *b, int idx);
+uint64_t b_bishop_attacks_bb(Board *b, int idx);
