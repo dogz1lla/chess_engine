@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "sliding.h"
+#include <stdbool.h>
 
 typedef enum {
     A1, B1, C1, D1, E1, F1, G1, H1,
@@ -11,7 +12,7 @@ typedef enum {
     A6, B6, C6, D6, E6, F6, G6, H6,
     A7, B7, C7, D7, E7, F7, G7, H7,
     A8, B8, C8, D8, E8, F8, G8, H8,
-} Squares;
+} Square;
 
 static const uint64_t ONE = (uint64_t)1;
 static const uint64_t BB_A1 = ONE << A1;
@@ -168,3 +169,24 @@ uint64_t w_knight_attacks_bb(Board *b, int idx);
 uint64_t b_knight_attacks_bb(Board *b, int idx);
 
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx);
+
+/* Returns the bit position of the least significant non-zero bit via
+ * returning the number of trailing 0-bits in x, starting at the least significant bit position.
+   If x is 0, the result is undefined.
+ * NOTE: __builtin_ctzll is defined in stdint. */
+static inline int bit_scan_forward(uint64_t bb) {
+    return __builtin_ctzll(bb);
+}
+
+/* Returns the bit position of the most significant non-zero bit via
+ * Returning the number of leading 0-bits in x, starting at the most significant bit position and
+ * then taking the ^ 63 operation.
+   If x is 0, the result is undefined.
+ * NOTE: __builtin_clzll is defined in stdint. */
+static inline int bit_scan_reverse(uint64_t bb) {
+    return __builtin_clzll(bb) ^ 63;
+}
+
+int bit_scan(uint64_t bb, bool reverse);
+bool is_negative_direction(Direction direction);
+uint64_t get_ray_attacks(RayTable *rt, uint64_t occupied, Direction direction, Square square);

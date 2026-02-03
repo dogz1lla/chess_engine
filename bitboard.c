@@ -278,6 +278,36 @@ uint64_t b_knight_attacks_bb(Board *b, int idx) {
     return knight_move_targets(piece_bb) & b->white_pieces;
 }
 
+/**
+* generalized bitScan
+* @author Gerd Isenberg
+* @param bb bitboard to scan
+* @precondition bb != 0
+* @param reverse, true bitScanReverse, false bitScanForward
+* @return index (0..63) of least/most significant one bit
+*/
+int bit_scan(uint64_t bb, bool reverse) {
+    uint64_t rMask;
+    // assert (bb != 0);
+    rMask = -(uint64_t)reverse;
+    bb &= -bb | rMask;
+    return bit_scan_reverse(bb);  // need the index of the MSB, not the number of leading zeros
+}
+
+bool is_negative_direction(Direction direction) {
+    return (direction == WE) || (direction == SO) || (direction == SW) || (direction == SE);
+}
+
+uint64_t get_ray_attacks(RayTable *rt, uint64_t occupied, Direction direction, Square square) {
+    uint64_t attacks = rt->table[square][direction];
+    uint64_t blocker = attacks & occupied;
+    if ( blocker ) {
+        square = bit_scan(blocker, is_negative_direction(direction));
+        attacks ^= rt->table[square][direction];
+    }
+    return attacks;
+}
+
 /* ROOK MOVES
  * */
 // FIXME: add the blockage logic
