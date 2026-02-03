@@ -190,3 +190,9 @@ static inline int bit_scan_reverse(uint64_t bb) {
 int bit_scan(uint64_t bb, bool reverse);
 bool is_negative_direction(Direction direction);
 uint64_t get_ray_attacks(RayTable *rt, uint64_t occupied, Direction direction, Square square);
+uint64_t all_rook_attacks_bb(Board *b, int idx);
+uint64_t rook_moves_bb(Board *b, int idx);
+uint64_t w_rook_moves_bb(Board *b, int idx);
+uint64_t b_rook_moves_bb(Board *b, int idx);
+uint64_t w_rook_attacks_bb(Board *b, int idx);
+uint64_t b_rook_attacks_bb(Board *b, int idx);

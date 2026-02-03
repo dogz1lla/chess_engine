@@ -71,34 +71,34 @@ void init_board(Board* b) {
     b->piece_bb[BLACK | BISHOP] = (uint64_t)0;
 
 
-    b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
-    b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
+    // b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
+    // b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
     // b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
     // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
     b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
     b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
-    b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
-    b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
+    // b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
+    // b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
     // b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
     // b->piece_bb[BLACK | BISHOP] = ((uint64_t)1 << (8 * 7 + 2)) | ((uint64_t)1 << (8 * 7 + 5));
-    b->piece_bb[WHITE | PAWN]   = ((uint64_t)1 << (8 * 1 + 0))
-                                | ((uint64_t)1 << (8 * 1 + 1))
-                                | ((uint64_t)1 << (8 * 1 + 2))
-                                | ((uint64_t)1 << (8 * 1 + 3))
-                                | ((uint64_t)1 << (8 * 1 + 4))
-                                | ((uint64_t)1 << (8 * 1 + 5))
-                                | ((uint64_t)1 << (8 * 1 + 6))
-                                | ((uint64_t)1 << (8 * 1 + 7));
-    b->piece_bb[BLACK | PAWN]   = ((uint64_t)1 << (8 * 6 + 0))
-                                | ((uint64_t)1 << (8 * 6 + 1))
-                                // | ((uint64_t)1 << (8 * 6 + 2))
-                                // | ((uint64_t)1 << (8 * 6 + 3))
-                                | ((uint64_t)1 << (8 * 3 + 3))
-                                | ((uint64_t)1 << (8 * 2 + 2))
-                                | ((uint64_t)1 << (8 * 6 + 4))
-                                | ((uint64_t)1 << (8 * 6 + 5))
-                                | ((uint64_t)1 << (8 * 6 + 6))
-                                | ((uint64_t)1 << (8 * 6 + 7));
+    // b->piece_bb[WHITE | PAWN]   = ((uint64_t)1 << (8 * 1 + 0))
+    //                             | ((uint64_t)1 << (8 * 1 + 1))
+    //                             | ((uint64_t)1 << (8 * 1 + 2))
+    //                             | ((uint64_t)1 << (8 * 1 + 3))
+    //                             | ((uint64_t)1 << (8 * 1 + 4))
+    //                             | ((uint64_t)1 << (8 * 1 + 5))
+    //                             | ((uint64_t)1 << (8 * 1 + 6))
+    //                             | ((uint64_t)1 << (8 * 1 + 7));
+    // b->piece_bb[BLACK | PAWN]   = ((uint64_t)1 << (8 * 6 + 0))
+    //                             | ((uint64_t)1 << (8 * 6 + 1))
+    //                             // | ((uint64_t)1 << (8 * 6 + 2))
+    //                             // | ((uint64_t)1 << (8 * 6 + 3))
+    //                             | ((uint64_t)1 << (8 * 3 + 3))
+    //                             | ((uint64_t)1 << (8 * 2 + 2))
+    //                             | ((uint64_t)1 << (8 * 6 + 4))
+    //                             | ((uint64_t)1 << (8 * 6 + 5))
+    //                             | ((uint64_t)1 << (8 * 6 + 6))
+    //                             | ((uint64_t)1 << (8 * 6 + 7));
     b->white_pieces = combine_all_white_pieces(b);
     b->black_pieces = combine_all_black_pieces(b);
     // b->occupied = combine_all_pieces(b);
@@ -310,15 +310,22 @@ uint64_t get_ray_attacks(RayTable *rt, uint64_t occupied, Direction direction, S
 
 /* ROOK MOVES
  * */
-// FIXME: add the blockage logic
-uint64_t w_rook_moves_bb(Board *b, int idx) {
-    return hv_rays_for_square(&b->ray_table, idx);
+uint64_t all_rook_attacks_bb(Board *b, int idx) {
+    return get_ray_attacks(&b->ray_table, b->occupied, NO, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, SO, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, WE, idx)
+         | get_ray_attacks(&b->ray_table, b->occupied, EA, idx);
 }
 
-uint64_t b_rook_moves_bb(Board *b, int idx) {
-    return hv_rays_for_square(&b->ray_table, idx);
-}
+uint64_t rook_moves_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx) & b->empty;}
+uint64_t w_rook_moves_bb(Board *b, int idx) {return rook_moves_bb(b, idx);}
+uint64_t b_rook_moves_bb(Board *b, int idx) {return rook_moves_bb(b, idx);}
 
+/* ROOK ATTACKS
+ * FIXME: change "attacks" to "captures" everywhere to avoid confusion
+ * */
+uint64_t w_rook_attacks_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx) & b->black_pieces;}
+uint64_t b_rook_attacks_bb(Board *b, int idx) {return all_rook_attacks_bb(b, idx) & b->white_pieces;}
 
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
@@ -408,6 +415,12 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
                 }
                 else if ((color | piece) == (BLACK | KNIGHT)) {
                     return b_knight_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (WHITE | ROOK)) {
+                    return w_rook_attacks_bb(b, square_idx);
+                }
+                else if ((color | piece) == (BLACK | ROOK)) {
+                    return b_rook_attacks_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types
