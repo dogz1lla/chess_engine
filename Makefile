@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -pedantic
 # but note it is excluded from the websocket target to match the original script.
 
 # Define the two executable targets
-TARGETS = chess ws_example
+TARGETS = chess ws_example test
 
 # --- Source Files ---
 
@@ -35,6 +35,9 @@ WS_EXAMPLE_SRCS = \
 # Include paths for the websocket library
 WS_INCLUDE = -Ilib/wsServer/src -Ilib/wsServer/include
 
+# Source files for the 'test' executable
+TEST_SRCS = test.c bitboard.c sliding.c one_step.c set_operations.c 
+
 # --- Phony Targets ---
 
 .PHONY: all clean
@@ -53,6 +56,12 @@ chess: $(CHESS_SRCS)
 # Rule to build the 'ws_example' executable
 ws_example: $(WS_EXAMPLE_SRCS)
 	$(CC) $(CFLAGS) $(WS_INCLUDE) $^ -o $@
+
+# --- Target: test
+
+# Rule to build the 'ws_example' executable
+test: $(TEST_SRCS)
+	$(CC) $(CFLAGS) -Werror $^ -o $@
 
 # --- Cleanup Rule ---
 
