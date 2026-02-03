@@ -3,6 +3,8 @@
 
 #include "bitboard.h"
 #include "msg_protocol.h"
+#include "one_step.h"
+#include "sliding.h"
 
 
 int main(void) {
@@ -23,11 +25,17 @@ int main(void) {
     // printf("%s\n", out_fen);
     //
     // print_bits(w_pawn_moves_bb(b, 11), 0);
-    print_bits(get_possible_moves(b, 11), 0);
-    printf("\n");
-    print_bits(get_possible_moves(b, 10), 0);
-    printf("\n");
-    print_bits(get_possible_moves(b, 12), 0);
+    // print_bits(get_possible_moves(b, 11), 0);
+    // printf("\n");
+    // print_bits(get_possible_moves(b, 10), 0);
+    // printf("\n");
+    // print_bits(get_possible_moves(b, 12), 0);
+    // print_bits(shift_north((uint64_t)1) & ((uint64_t)(-2) << 1), 0);
+
+    RayTable* rt = calloc(1, sizeof(RayTable));
+    init_ray_table(rt);
+    print_bits(hvda_rays_for_square(rt, E4), 0);
+    free(rt);
     free(b);
     return 0;
 }
