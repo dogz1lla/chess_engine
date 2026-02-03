@@ -5,8 +5,6 @@
 #include <inttypes.h>
 
 #include "bitboard.h"
-#include "msg_protocol.h"
-#include "one_step.h"
 #include "sliding.h"
 
 
@@ -42,6 +40,22 @@ int test_ray_table_south_west(void) {
     return 0;
 }
 
+int test_bit_scan_reverse(void) {
+    ASSERT_EQ_U64(bit_scan_reverse(0x0000000000000001ULL), 0);
+    ASSERT_EQ_U64(bit_scan_reverse(0x0000000000000002ULL), 1);
+    ASSERT_EQ_U64(bit_scan_reverse(0x0000000000000100ULL), 8);
+    ASSERT_EQ_U64(bit_scan_reverse(0x8000000000000000ULL), 63);
+    ASSERT_EQ_U64(bit_scan_reverse(0x000000000000FFFFULL), 15);
+    ASSERT_EQ_U64(bit_scan_reverse(0x0000F0000000ULL),     31);
+    ASSERT_EQ_U64(bit_scan_reverse(0x00FF00FF00000000ULL), 55);
+    ASSERT_EQ_U64(bit_scan_reverse(0xFFFFFFFFFFFFFFFFULL), 63); // all bits set
+    // Single high bit mixed with low bits
+    ASSERT_EQ_U64(bit_scan_reverse(0x0100000000000001ULL), 56);
+    // High bit with a couple of lower bits
+    ASSERT_EQ_U64(bit_scan_reverse(0x8000000000000005ULL), 63);
+    return 0;
+}
+
 
 int main(void) {
     if (test_ray_table_north_west() == 0) {
@@ -51,6 +65,9 @@ int main(void) {
         printf("PASS\n");
     }
     if (test_ray_table_south_west() == 0) {
+        printf("PASS\n");
+    }
+    if (test_bit_scan_reverse() == 0) {
         printf("PASS\n");
     }
     return 1;
