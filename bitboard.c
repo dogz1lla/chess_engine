@@ -73,8 +73,8 @@ void init_board(Board* b) {
 
     // b->piece_bb[WHITE | KING]   =  (uint64_t)1 << (8 * 0 + 4);
     // b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
-    // b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
-    // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
+    b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
+    b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
     b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
     b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
     // b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
@@ -346,6 +346,21 @@ uint64_t b_bishop_moves_bb(Board *b, int idx) {return bishop_moves_bb(b, idx);}
 uint64_t w_bishop_attacks_bb(Board *b, int idx) {return all_bishop_attacks_bb(b, idx) & b->black_pieces;}
 uint64_t b_bishop_attacks_bb(Board *b, int idx) {return all_bishop_attacks_bb(b, idx) & b->white_pieces;}
 
+/* QUEEN MOVES
+ * */
+uint64_t all_queen_attacks_bb(Board *b, int idx) {
+    return all_rook_attacks_bb(b, idx) | all_bishop_attacks_bb(b, idx);
+}
+uint64_t queen_moves_bb(Board *b, int idx) {return all_queen_attacks_bb(b, idx) & b->empty;}
+uint64_t w_queen_moves_bb(Board *b, int idx) {return queen_moves_bb(b, idx);}
+uint64_t b_queen_moves_bb(Board *b, int idx) {return queen_moves_bb(b, idx);}
+
+/* QUEEN ATTACKS
+ * FIXME: change "attacks" to "captures" everywhere to avoid confusion
+ * */
+uint64_t w_queen_attacks_bb(Board *b, int idx) {return all_queen_attacks_bb(b, idx) & b->black_pieces;}
+uint64_t b_queen_attacks_bb(Board *b, int idx) {return all_queen_attacks_bb(b, idx) & b->white_pieces;}
+
 
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
@@ -353,7 +368,7 @@ uint64_t b_bishop_attacks_bb(Board *b, int idx) {return all_bishop_attacks_bb(b,
  * FIXME: implement for the following piece types:
  * - [x] pawns
  * - [x] kings
- * - [ ] queens
+ * - [x] queens
  * - [x] knights
  * - [x] bishops
  * - [x] rooks
@@ -402,6 +417,12 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
                         break;
                     case (BLACK | BISHOP):
                         moves_bb = b_bishop_moves_bb(b, square_idx);
+                        break;
+                    case (WHITE | QUEEN):
+                        moves_bb = w_queen_moves_bb(b, square_idx);
+                        break;
+                    case (BLACK | QUEEN):
+                        moves_bb = b_queen_moves_bb(b, square_idx);
                         break;
                 }
                 return moves_bb;
@@ -456,6 +477,12 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
                         break;
                     case (BLACK | BISHOP):
                         attacks_bb = b_bishop_attacks_bb(b, square_idx);
+                        break;
+                    case (WHITE | QUEEN):
+                        attacks_bb = w_queen_attacks_bb(b, square_idx);
+                        break;
+                    case (BLACK | QUEEN):
+                        attacks_bb = b_queen_attacks_bb(b, square_idx);
                         break;
                 }
                 return attacks_bb;
