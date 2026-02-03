@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "sliding.h"
 
 typedef enum {
     A1, B1, C1, D1, E1, F1, G1, H1,
@@ -109,6 +110,7 @@ typedef struct {
     uint64_t empty;
     uint64_t white_pieces;
     uint64_t black_pieces;
+    RayTable ray_table;
 } Board;
 
 

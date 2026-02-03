@@ -10,6 +10,7 @@
 #include "set_operations.h"
 #include "one_step.h"
 #include "bitboard.h"
+#include "sliding.h"
 
 
 const uint64_t rank4 = ((uint64_t)1 << (8 * 3 + 0))
@@ -74,8 +75,8 @@ void init_board(Board* b) {
     b->piece_bb[BLACK | KING]   =  (uint64_t)1 << (8 * 7 + 4);
     // b->piece_bb[WHITE | QUEEN]  =  (uint64_t)1 << (8 * 0 + 3);
     // b->piece_bb[BLACK | QUEEN]  =  (uint64_t)1 << (8 * 7 + 3);
-    // b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
-    // b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
+    b->piece_bb[WHITE | ROOK]   = ((uint64_t)1 << (8 * 0 + 0)) | ((uint64_t)1 << (8 * 0 + 7));
+    b->piece_bb[BLACK | ROOK]   = ((uint64_t)1 << (8 * 7 + 0)) | ((uint64_t)1 << (8 * 7 + 7));
     b->piece_bb[WHITE | KNIGHT] = ((uint64_t)1 << (8 * 0 + 1)) | ((uint64_t)1 << (8 * 0 + 6));
     b->piece_bb[BLACK | KNIGHT] = ((uint64_t)1 << (8 * 7 + 1)) | ((uint64_t)1 << (8 * 7 + 6));
     // b->piece_bb[WHITE | BISHOP] = ((uint64_t)1 << (8 * 0 + 2)) | ((uint64_t)1 << (8 * 0 + 5));
@@ -103,6 +104,8 @@ void init_board(Board* b) {
     // b->occupied = combine_all_pieces(b);
     b->occupied = b->white_pieces | b->black_pieces;
     b->empty    = bit_complement(b->occupied);
+
+    init_ray_table(&b->ray_table);
 }
 
 void print_bits(uint64_t n, int as_column) {
@@ -275,6 +278,17 @@ uint64_t b_knight_attacks_bb(Board *b, int idx) {
     return knight_move_targets(piece_bb) & b->white_pieces;
 }
 
+/* ROOK MOVES
+ * */
+// FIXME: add the blockage logic
+uint64_t w_rook_moves_bb(Board *b, int idx) {
+    return hv_rays_for_square(&b->ray_table, idx);
+}
+
+uint64_t b_rook_moves_bb(Board *b, int idx) {
+    return hv_rays_for_square(&b->ray_table, idx);
+}
+
 
 /*
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
@@ -299,23 +313,30 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
             uint64_t piece_bb = b->piece_bb[color | piece];
             if ((piece_bb & square_idx_bb) > 0) {
                 // the piece is on the given square -> dispatch on the kind of piece
-                if ((color | piece) == (WHITE | PAWN)) {
+                int color_piece = color | piece;
+                if (color_piece == (WHITE | PAWN)) {
                     return w_pawn_moves_bb(b, square_idx);
                 }
-                else if ((color | piece) == (BLACK | PAWN)) {
+                else if (color_piece == (BLACK | PAWN)) {
                     return b_pawn_moves_bb(b, square_idx);
                 }
-                else if ((color | piece) == (WHITE | KING)) {
+                else if (color_piece == (WHITE | KING)) {
                     return w_king_moves_bb(b, square_idx);
                 }
-                else if ((color | piece) == (BLACK | KING)) {
+                else if (color_piece == (BLACK | KING)) {
                     return b_king_moves_bb(b, square_idx);
                 }
-                else if ((color | piece) == (WHITE | KNIGHT)) {
+                else if (color_piece == (WHITE | KNIGHT)) {
                     return w_knight_moves_bb(b, square_idx);
                 }
-                else if ((color | piece) == (BLACK | KNIGHT)) {
+                else if (color_piece == (BLACK | KNIGHT)) {
                     return b_knight_moves_bb(b, square_idx);
+                }
+                else if (color_piece == (WHITE | ROOK)) {
+                    return w_rook_moves_bb(b, square_idx);
+                }
+                else if (color_piece == (BLACK | ROOK)) {
+                    return b_rook_moves_bb(b, square_idx);
                 }
                 else {
                     // FIXME: implement the rest of the moves for other piece types
