@@ -1,6 +1,82 @@
 #pragma once
 #include <stdint.h>
 
+typedef enum {
+    A1, B1, C1, D1, E1, F1, G1, H1,
+    A2, B2, C2, D2, E2, F2, G2, H2,
+    A3, B3, C3, D3, E3, F3, G3, H3,
+    A4, B4, C4, D4, E4, F4, G4, H4,
+    A5, B5, C5, D5, E5, F5, G5, H5,
+    A6, B6, C6, D6, E6, F6, G6, H6,
+    A7, B7, C7, D7, E7, F7, G7, H7,
+    A8, B8, C8, D8, E8, F8, G8, H8,
+} Squares;
+
+static const uint64_t ONE = (uint64_t)1;
+static const uint64_t BB_A1 = ONE << A1;
+static const uint64_t BB_B1 = ONE << B1;
+static const uint64_t BB_C1 = ONE << C1;
+static const uint64_t BB_D1 = ONE << D1;
+static const uint64_t BB_E1 = ONE << E1;
+static const uint64_t BB_F1 = ONE << F1;
+static const uint64_t BB_G1 = ONE << G1;
+static const uint64_t BB_H1 = ONE << H1;
+static const uint64_t BB_A2 = ONE << A2;
+static const uint64_t BB_B2 = ONE << B2;
+static const uint64_t BB_C2 = ONE << C2;
+static const uint64_t BB_D2 = ONE << D2;
+static const uint64_t BB_E2 = ONE << E2;
+static const uint64_t BB_F2 = ONE << F2;
+static const uint64_t BB_G2 = ONE << G2;
+static const uint64_t BB_H2 = ONE << H2;
+static const uint64_t BB_A3 = ONE << A3;
+static const uint64_t BB_B3 = ONE << B3;
+static const uint64_t BB_C3 = ONE << C3;
+static const uint64_t BB_D3 = ONE << D3;
+static const uint64_t BB_E3 = ONE << E3;
+static const uint64_t BB_F3 = ONE << F3;
+static const uint64_t BB_G3 = ONE << G3;
+static const uint64_t BB_H3 = ONE << H3;
+static const uint64_t BB_A4 = ONE << A4;
+static const uint64_t BB_B4 = ONE << B4;
+static const uint64_t BB_C4 = ONE << C4;
+static const uint64_t BB_D4 = ONE << D4;
+static const uint64_t BB_E4 = ONE << E4;
+static const uint64_t BB_F4 = ONE << F4;
+static const uint64_t BB_G4 = ONE << G4;
+static const uint64_t BB_H4 = ONE << H4;
+static const uint64_t BB_A5 = ONE << A5;
+static const uint64_t BB_B5 = ONE << B5;
+static const uint64_t BB_C5 = ONE << C5;
+static const uint64_t BB_D5 = ONE << D5;
+static const uint64_t BB_E5 = ONE << E5;
+static const uint64_t BB_F5 = ONE << F5;
+static const uint64_t BB_G5 = ONE << G5;
+static const uint64_t BB_H5 = ONE << H5;
+static const uint64_t BB_A6 = ONE << A6;
+static const uint64_t BB_B6 = ONE << B6;
+static const uint64_t BB_C6 = ONE << C6;
+static const uint64_t BB_D6 = ONE << D6;
+static const uint64_t BB_E6 = ONE << E6;
+static const uint64_t BB_F6 = ONE << F6;
+static const uint64_t BB_G6 = ONE << G6;
+static const uint64_t BB_H6 = ONE << H6;
+static const uint64_t BB_A7 = ONE << A7;
+static const uint64_t BB_B7 = ONE << B7;
+static const uint64_t BB_C7 = ONE << C7;
+static const uint64_t BB_D7 = ONE << D7;
+static const uint64_t BB_E7 = ONE << E7;
+static const uint64_t BB_F7 = ONE << F7;
+static const uint64_t BB_G7 = ONE << G7;
+static const uint64_t BB_H7 = ONE << H7;
+static const uint64_t BB_A8 = ONE << A8;
+static const uint64_t BB_B8 = ONE << B8;
+static const uint64_t BB_C8 = ONE << C8;
+static const uint64_t BB_D8 = ONE << D8;
+static const uint64_t BB_E8 = ONE << E8;
+static const uint64_t BB_F8 = ONE << F8;
+static const uint64_t BB_G8 = ONE << G8;
+static const uint64_t BB_H8 = ONE << H8;
 
 typedef enum {
     PIECE_NONE = 0,
