@@ -112,6 +112,8 @@ typedef struct {
     uint64_t white_pieces;
     uint64_t black_pieces;
     RayTable ray_table;
+    uint64_t moves_table[64];
+    uint64_t attacks_table[64];
 } Board;
 
 

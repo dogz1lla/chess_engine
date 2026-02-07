@@ -106,6 +106,11 @@ void init_board(Board* b) {
     b->empty    = bit_complement(b->occupied);
 
     init_ray_table(&b->ray_table);
+
+    for (int i = 0; i < 64; i++) {
+        b->moves_table[i] = 0;
+        b->attacks_table[i] = 0;
+    }
 }
 
 void print_bits(uint64_t n, int as_column) {
@@ -530,11 +535,21 @@ void move_piece(Board* b, Move* m) {
     b->empty    = bit_complement(b->occupied);
     return;
 }
+
 // # how do i code the checks
 // check := king is among pieces that can be captured on the given turn by the opposite side's
 // pieces
 // so i would need capture bit boards of all the enemy pieces and then take the AND with the king bb
 // and check if the result is >0
 // TODO NEXT
-bool is_attacked(uint64_t occupied, Square square, Color attacked_by) {
+bool is_attacked(Board *b, Square square, Color attacked_by) {
+    Piece pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+    // int attacked_color = (attacked_by == WHITE) ? BLACK : WHITE;
+    uint64_t square_bb = get_square_bit(square);
+
+    for (uint16_t piece_idx = 0; piece_idx <= 5; piece_idx++) {
+        uint16_t piece = pieces[piece_idx];
+        uint64_t piece_bb = b->piece_bb[attacked_by | piece];
+    }
+    return false;
 }
