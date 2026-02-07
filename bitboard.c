@@ -121,6 +121,7 @@ void print_bits(uint64_t n, int as_column) {
 }
 
 void bb_to_array(uint64_t bb, uint8_t *bb_array) {
+    // FIXME: remove this function because we need just the string anyway
     for (size_t i=0; i<64; i++) {
         bb_array[i] = (bb & ((uint64_t)1 << i)) > 0;
     }
@@ -520,4 +521,12 @@ void move_piece(Board* b, Move* m) {
     b->occupied = b->white_pieces | b->black_pieces;
     b->empty    = bit_complement(b->occupied);
     return;
+}
+// # how do i code the checks
+// check := king is among pieces that can be captured on the given turn by the opposite side's
+// pieces
+// so i would need capture bit boards of all the enemy pieces and then take the AND with the king bb
+// and check if the result is >0
+// TODO NEXT
+bool is_attacked(uint64_t occupied, Square square, Color attacked_by) {
 }
