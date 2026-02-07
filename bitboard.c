@@ -367,9 +367,53 @@ uint64_t b_queen_attacks_bb(Board *b, int idx) {return all_queen_attacks_bb(b, i
  * Return a bitboard of all the valid moves for a piece that is placed on the square `square_idx`.
  * If there is no piece there (shouldn't happen) then return empty bitboard.
  *   */
+uint64_t get_moves_for_piece_on_square(Board *b, Color color, Piece piece, Square square) {
+    int color_piece = color | piece;
+    uint64_t moves_bb = 0;
+    switch (color_piece) {
+        case (WHITE | PAWN):
+            moves_bb = w_pawn_moves_bb(b, square);
+            break;
+        case (BLACK | PAWN):
+            moves_bb = b_pawn_moves_bb(b, square);
+            break;
+        case (WHITE | KING):
+            moves_bb = w_king_moves_bb(b, square);
+            break;
+        case (BLACK | KING):
+            moves_bb = b_king_moves_bb(b, square);
+            break;
+        case (WHITE | KNIGHT):
+            moves_bb = w_knight_moves_bb(b, square);
+            break;
+        case (BLACK | KNIGHT):
+            moves_bb = b_knight_moves_bb(b, square);
+            break;
+        case (WHITE | ROOK):
+            moves_bb = w_rook_moves_bb(b, square);
+            break;
+        case (BLACK | ROOK):
+            moves_bb = b_rook_moves_bb(b, square);
+            break;
+        case (WHITE | BISHOP):
+            moves_bb = w_bishop_moves_bb(b, square);
+            break;
+        case (BLACK | BISHOP):
+            moves_bb = b_bishop_moves_bb(b, square);
+            break;
+        case (WHITE | QUEEN):
+            moves_bb = w_queen_moves_bb(b, square);
+            break;
+        case (BLACK | QUEEN):
+            moves_bb = b_queen_moves_bb(b, square);
+            break;
+    }
+    return moves_bb;
+}
+
 uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
-    uint16_t colors[] = { WHITE, BLACK };
-    uint16_t pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+    Color colors[] = { WHITE, BLACK };
+    Piece pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
     uint64_t square_idx_bb =  get_square_bit(square_idx);
 
     for (uint16_t color_idx = 0; color_idx <= 1; color_idx++) {
@@ -379,47 +423,7 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
             uint64_t piece_bb = b->piece_bb[color | piece];
             if ((piece_bb & square_idx_bb) > 0) {
                 // the piece is on the given square -> dispatch on the kind of piece
-                int color_piece = color | piece;
-                uint64_t moves_bb = 0;
-                switch (color_piece) {
-                    case (WHITE | PAWN):
-                        moves_bb = w_pawn_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | PAWN):
-                        moves_bb = b_pawn_moves_bb(b, square_idx);
-                        break;
-                    case (WHITE | KING):
-                        moves_bb = w_king_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | KING):
-                        moves_bb = b_king_moves_bb(b, square_idx);
-                        break;
-                    case (WHITE | KNIGHT):
-                        moves_bb = w_knight_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | KNIGHT):
-                        moves_bb = b_knight_moves_bb(b, square_idx);
-                        break;
-                    case (WHITE | ROOK):
-                        moves_bb = w_rook_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | ROOK):
-                        moves_bb = b_rook_moves_bb(b, square_idx);
-                        break;
-                    case (WHITE | BISHOP):
-                        moves_bb = w_bishop_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | BISHOP):
-                        moves_bb = b_bishop_moves_bb(b, square_idx);
-                        break;
-                    case (WHITE | QUEEN):
-                        moves_bb = w_queen_moves_bb(b, square_idx);
-                        break;
-                    case (BLACK | QUEEN):
-                        moves_bb = b_queen_moves_bb(b, square_idx);
-                        break;
-                }
-                return moves_bb;
+                return get_moves_for_piece_on_square(b, color, piece, square_idx);
             }
         }
     }
@@ -472,8 +476,8 @@ uint64_t get_attacks_for_piece_on_square(Board *b, Color color, Piece piece, Squ
 }
 
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
-    uint16_t colors[] = { WHITE, BLACK };
-    uint16_t pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
+    Color colors[] = { WHITE, BLACK };
+    Piece pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
     uint64_t square_idx_bb =  get_square_bit(square_idx);
 
     for (uint16_t color_idx = 0; color_idx <= 1; color_idx++) {

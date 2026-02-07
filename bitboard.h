@@ -143,6 +143,7 @@ uint64_t w_knight_moves_bb(Board *b, int idx);
 uint64_t b_knight_moves_bb(Board *b, int idx);
 
 void move_piece(Board*, Move*);
+uint64_t get_moves_for_piece_on_square(Board *b, Color color, Piece piece, Square square);
 uint64_t get_possible_moves(Board *b, uint8_t square_idx);
 
 void bb_to_array(uint64_t bb, uint8_t *idxs);
@@ -168,6 +169,7 @@ uint64_t b_king_attacks_bb(Board *b, int idx);
 uint64_t w_knight_attacks_bb(Board *b, int idx);
 uint64_t b_knight_attacks_bb(Board *b, int idx);
 
+uint64_t get_attacks_for_piece_on_square(Board *b, Color color, Piece piece, Square square);
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx);
 
 /* Returns the bit position of the least significant non-zero bit via
