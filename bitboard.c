@@ -427,6 +427,50 @@ uint64_t get_possible_moves(Board *b, uint8_t square_idx) {
     return (uint64_t)0;
 }
 
+uint64_t get_attacks_for_piece_on_square(Board *b, Color color, Piece piece, Square square) {
+    int color_piece = color | piece;
+    uint64_t attacks_bb = 0;
+    switch (color_piece) {
+        case (WHITE | PAWN):
+            attacks_bb = w_pawn_attacks_bb(b, square);
+            break;
+        case (BLACK | PAWN):
+            attacks_bb = b_pawn_attacks_bb(b, square);
+            break;
+        case (WHITE | KING):
+            attacks_bb = w_king_attacks_bb(b, square);
+            break;
+        case (BLACK | KING):
+            attacks_bb = b_king_attacks_bb(b, square);
+            break;
+        case (WHITE | KNIGHT):
+            attacks_bb = w_knight_attacks_bb(b, square);
+            break;
+        case (BLACK | KNIGHT):
+            attacks_bb = b_knight_attacks_bb(b, square);
+            break;
+        case (WHITE | ROOK):
+            attacks_bb = w_rook_attacks_bb(b, square);
+            break;
+        case (BLACK | ROOK):
+            attacks_bb = b_rook_attacks_bb(b, square);
+            break;
+        case (WHITE | BISHOP):
+            attacks_bb = w_bishop_attacks_bb(b, square);
+            break;
+        case (BLACK | BISHOP):
+            attacks_bb = b_bishop_attacks_bb(b, square);
+            break;
+        case (WHITE | QUEEN):
+            attacks_bb = w_queen_attacks_bb(b, square);
+            break;
+        case (BLACK | QUEEN):
+            attacks_bb = b_queen_attacks_bb(b, square);
+                break;
+        }
+    return attacks_bb;
+}
+
 uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
     uint16_t colors[] = { WHITE, BLACK };
     uint16_t pieces[] = { PAWN, KNIGHT, BISHOP, QUEEN, KING, ROOK };
@@ -439,47 +483,7 @@ uint64_t get_possible_attacks(Board *b, uint8_t square_idx) {
             uint64_t piece_bb = b->piece_bb[color | piece];
             if ((piece_bb & square_idx_bb) > 0) {
                 // the piece is on the given square -> dispatch on the kind of piece
-                int color_piece = color | piece;
-                uint64_t attacks_bb = 0;
-                switch (color_piece) {
-                    case (WHITE | PAWN):
-                        attacks_bb = w_pawn_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | PAWN):
-                        attacks_bb = b_pawn_attacks_bb(b, square_idx);
-                        break;
-                    case (WHITE | KING):
-                        attacks_bb = w_king_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | KING):
-                        attacks_bb = b_king_attacks_bb(b, square_idx);
-                        break;
-                    case (WHITE | KNIGHT):
-                        attacks_bb = w_knight_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | KNIGHT):
-                        attacks_bb = b_knight_attacks_bb(b, square_idx);
-                        break;
-                    case (WHITE | ROOK):
-                        attacks_bb = w_rook_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | ROOK):
-                        attacks_bb = b_rook_attacks_bb(b, square_idx);
-                        break;
-                    case (WHITE | BISHOP):
-                        attacks_bb = w_bishop_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | BISHOP):
-                        attacks_bb = b_bishop_attacks_bb(b, square_idx);
-                        break;
-                    case (WHITE | QUEEN):
-                        attacks_bb = w_queen_attacks_bb(b, square_idx);
-                        break;
-                    case (BLACK | QUEEN):
-                        attacks_bb = b_queen_attacks_bb(b, square_idx);
-                        break;
-                }
-                return attacks_bb;
+                return get_attacks_for_piece_on_square(b, color, piece, square_idx);
             }
         }
     }
